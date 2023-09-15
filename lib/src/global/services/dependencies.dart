@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 
 import '../controller/connection_controller.dart';
+import 'package:bestaf_toolkit/src/features/modes/controllers/toolkit_controller.dart';
 import 'barrel.dart';
 
 class AppDependency {
@@ -24,8 +25,8 @@ class AppDependency {
     // Get.put(ProfileRepo());
     // Get.put(FacilityRepo());
 
-    // //controllers
-    // Get.put(AuthController());
+    //controllers
+    Get.put(ToolkitController());
     // Get.put(DashboardController());
     // Get.put(FacilityController());
   }

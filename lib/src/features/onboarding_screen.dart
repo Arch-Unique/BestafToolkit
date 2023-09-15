@@ -4,18 +4,21 @@ import 'package:bestaf_toolkit/src/src_barrel.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import 'modes/controllers/toolkit_controller.dart';
 import 'modes/views/barrel.dart';
 
 class OnboardingScreen extends StatelessWidget {
   OnboardingScreen({super.key});
   final screens = [
     InternalCheckPage(),
-    ExternalCalibrationPage(),
+    ExternalCalibPage(),
     KFactorCalculatorPage(),
   ];
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.find<ToolkitController>();
+    controller.initLanes();
     return Scaffold(
       appBar: backAppBar(hasBack: false, title: "Choose What To Do"),
       body: Ui.padding(

@@ -200,4 +200,60 @@ class CustomTextField extends StatelessWidget {
         suffix: Assets.search38,
         customOnChanged: customOnChanged);
   }
+
+  static dropdown(
+      List<String> options, TextEditingController cont, String label,
+      {Function(String)? onChanged, String? initOption}) {
+    String curOption =
+        (initOption == null || initOption.isEmpty) ? options[0] : initOption;
+    cont.text = curOption;
+    return StatefulBuilder(builder: (context, setState) {
+      return SizedBox(
+        width: Ui.width(context) - 48,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            AppText.bold(label),
+            const SizedBox(
+              height: 8,
+            ),
+            DropdownButton<String>(
+                value: curOption,
+                isExpanded: true,
+                elevation: 0,
+                hint: AppText.thin(curOption),
+                // underline: Padding(
+                //   padding: const EdgeInsets.only(top: 16.0),
+                //   child: Divider(
+                //     color: AppColors.white,
+                //   ),
+                // ),
+
+                icon: Icon(
+                  Icons.keyboard_arrow_down_rounded,
+                  color: AppColors.white,
+                ),
+                dropdownColor: AppColors.primaryColor,
+                items: options
+                    .map((e) => DropdownMenuItem<String>(
+                        value: e, child: AppText.thin(e)))
+                    .toList(),
+                onChanged: (value) {
+                  setState(() {
+                    curOption = value!;
+                    cont.text = curOption;
+                  });
+                  if (onChanged != null) {
+                    onChanged(curOption);
+                  }
+                }),
+            const SizedBox(
+              height: 32,
+            )
+          ],
+        ),
+      );
+    });
+  }
 }

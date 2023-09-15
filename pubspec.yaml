@@ -105,7 +105,7 @@ flutter:
           weight: 400
         - asset: assets/fonts/Grotta-Trial-Medium.otf
           weight: 500
-        - asset: assets/fonts/Grotta-Trial-SemiBold.otf
+        - asset: assets/fonts/Grotta-Trial-Semibold.otf
           weight: 600
         - asset: assets/fonts/Grotta-Trial-Bold.otf
           weight: 700

@@ -7,27 +7,27 @@ import 'package:get/get.dart';
 
 import '../../../../global/ui/ui_barrel.dart';
 
-class InternalCheckPage extends StatefulWidget {
-  const InternalCheckPage({super.key});
+class ExternalCalibPage extends StatefulWidget {
+  const ExternalCalibPage({super.key});
 
   @override
-  State<InternalCheckPage> createState() => _InternalCheckPageState();
+  State<ExternalCalibPage> createState() => _ExternalCalibPageState();
 }
 
-class _InternalCheckPageState extends State<InternalCheckPage> {
+class _ExternalCalibPageState extends State<ExternalCalibPage> {
   final controller = Get.find<ToolkitController>();
 
   @override
   void initState() {
     // TODO: implement initState
-    controller.mode = ToolkitModes.internalCheck;
+    controller.mode = ToolkitModes.externalCalibration;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return SinglePageScaffold(
-      title: "Internal Check",
+      title: "External Calibration",
       child: SingleChildScrollView(
         child: Ui.padding(
           child: Column(
@@ -39,8 +39,7 @@ class _InternalCheckPageState extends State<InternalCheckPage> {
                 onChanged: (p0) {
                   controller.lane = controller.allMetersMap[p0]!;
                 },
-              ),
-              CustomTextField("Programmed Qty", TextEditingController())
+              )
             ],
           ),
         ),

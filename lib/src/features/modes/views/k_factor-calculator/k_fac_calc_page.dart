@@ -7,14 +7,14 @@ import 'package:get/get.dart';
 
 import '../../../../global/ui/ui_barrel.dart';
 
-class InternalCheckPage extends StatefulWidget {
-  const InternalCheckPage({super.key});
+class KFactorCalculatorPage extends StatefulWidget {
+  const KFactorCalculatorPage({super.key});
 
   @override
-  State<InternalCheckPage> createState() => _InternalCheckPageState();
+  State<KFactorCalculatorPage> createState() => _KFactorCalculatorPageState();
 }
 
-class _InternalCheckPageState extends State<InternalCheckPage> {
+class _KFactorCalculatorPageState extends State<KFactorCalculatorPage> {
   final controller = Get.find<ToolkitController>();
 
   @override
@@ -27,20 +27,30 @@ class _InternalCheckPageState extends State<InternalCheckPage> {
   @override
   Widget build(BuildContext context) {
     return SinglePageScaffold(
-      title: "Internal Check",
+      title: "K-Factor Calculator",
       child: SingleChildScrollView(
         child: Ui.padding(
           child: Column(
             children: [
               CustomTextField.dropdown(
-                controller.allMetersMap.keys.toList(),
+                ToolkitLocation.values.map((e) => e.title).toList(),
                 TextEditingController(),
-                "Select Lane/Meter",
+                "Location",
                 onChanged: (p0) {
-                  controller.lane = controller.allMetersMap[p0]!;
+                  controller.location = ToolkitLocation.values
+                      .firstWhere((element) => element.title == p0);
                 },
               ),
-              CustomTextField("Programmed Qty", TextEditingController())
+              CustomTextField("Batch Volume", TextEditingController()),
+              CustomTextField("Old K Factor", TextEditingController()),
+              Ui.padding(child: AppDivider()),
+              CustomTextField("Prover Volume", TextEditingController()),
+              CustomTextField("Meter Volume", TextEditingController()),
+              Ui.padding(child: AppDivider()),
+              AppButton(
+                onPressed: () {},
+                text: "Calculate",
+              )
             ],
           ),
         ),
