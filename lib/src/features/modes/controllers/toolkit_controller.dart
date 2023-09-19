@@ -1,7 +1,11 @@
+import 'dart:io';
+
 import 'package:excel/excel.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:syncfusion_flutter_xlsio/xlsio.dart';
 
 import '../../../src_barrel.dart';
@@ -349,7 +353,7 @@ class ToolkitController extends GetxController {
   Map<String, LaneMeter> get allMetersMap =>
       {for (var e in _allMeters) "${e.location.title} - ${e.lane}": e};
 
-  initLanes() {
+  _initLanes() {
     for (var element in allLanes) {
       _allMeters.add(LaneMeter(
         enabled: element[9],
@@ -365,13 +369,14 @@ class ToolkitController extends GetxController {
   }
 
   initWorkSheet() async {
+    _initLanes();
     ByteData data = await rootBundle.load('assets/json/toolkitsheet.xlsx');
     var bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
     excel = Excel.decodeBytes(bytes);
   }
 
   saveToolkitSheet(
-      String checkBy, String calibBy, List<List<dynamic>> entries) {
+      String checkBy, String calibBy, List<List<dynamic>> entries) async {
     _toolkitSheet.value.date = DateFormat("dd/MM/yyyy").format(DateTime.now());
     _toolkitSheet.value.nextdate = DateFormat("dd/MM/yyyy")
         .format(DateTime.now().add(Duration(days: _toolkitSheet.value.checks)));
@@ -379,10 +384,10 @@ class ToolkitController extends GetxController {
     _toolkitSheet.value.checkBy = checkBy;
     _toolkitSheet.value.entry = entries;
 
-    _saveToolkitSheet();
+    await _saveToolkitSheet();
   }
 
-  _saveToolkitSheet() {
+  _saveToolkitSheet() async {
     excel.updateCell("Sheet1", CellIndex.indexByString(locationKey),
         _toolkitSheet.value.location.title);
     excel.updateCell("Sheet1", CellIndex.indexByString(dateKey),
@@ -464,5 +469,42 @@ class ToolkitController extends GetxController {
           CellIndex.indexByString("$remarksKey${entryStartRow + i}"),
           _toolkitSheet.value.entry[i][8]);
     }
+
+    var fileBytes = excel.save()!;
+    var directory = await getTemporaryDirectory();
+    var nameOfFile =
+        "toolkitsheet-${DateTime.now().millisecondsSinceEpoch}.xlsx";
+
+    final f = File('${directory.path}/$nameOfFile.xlsx')
+      ..createSync(recursive: true)
+      ..writeAsBytesSync(fileBytes);
+
+    final xf = XFile(f.path);
+
+    await Share.shareXFiles(
+      [xf],
+    );
+  }
+
+  static double calcKFactor(double batchVol, double oldKFactor, double ddiff,
+      double proverVol, double meterVol, bool isApapa) {
+    final diff = proverVol - meterVol;
+    final desiredDiff = batchVol + ddiff;
+    double nkfactor = oldKFactor;
+    if (isApapa) {
+      if (desiredDiff - diff > 0) {
+        nkfactor = (meterVol * oldKFactor) / (desiredDiff);
+      } else {
+        nkfactor = (desiredDiff * oldKFactor) / (meterVol);
+      }
+    } else {
+      if (desiredDiff - diff > 0) {
+        nkfactor = (desiredDiff * oldKFactor) / (meterVol);
+      } else {
+        nkfactor = (meterVol * oldKFactor) / (desiredDiff);
+      }
+    }
+
+    return nkfactor;
   }
 }

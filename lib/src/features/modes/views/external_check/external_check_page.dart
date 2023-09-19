@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../global/ui/ui_barrel.dart';
+import '../util_widgets.dart';
 
 class ExternalCalibPage extends StatefulWidget {
   const ExternalCalibPage({super.key});
@@ -16,11 +17,20 @@ class ExternalCalibPage extends StatefulWidget {
 
 class _ExternalCalibPageState extends State<ExternalCalibPage> {
   final controller = Get.find<ToolkitController>();
+  List<TextEditingController> alltecs = List.generate(9, (index) {
+    return TextEditingController(text: index == 0 ? "5000" : null);
+  });
+  TextEditingController calibByTec = TextEditingController();
+  TextEditingController checkByTec = TextEditingController();
+  List<List<dynamic>> entries = [];
+  int cur = 0;
+  List<Widget> allEntryWidgets = [];
 
   @override
   void initState() {
     // TODO: implement initState
     controller.mode = ToolkitModes.externalCalibration;
+    allEntryWidgets.add(EntryWidget(alltecs.sublist(0, 9)));
     super.initState();
   }
 
@@ -39,11 +49,80 @@ class _ExternalCalibPageState extends State<ExternalCalibPage> {
                 onChanged: (p0) {
                   controller.lane = controller.allMetersMap[p0]!;
                 },
+              ),
+              AppDivider(),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(children: [
+                  EntryHeader(),
+                  Column(
+                    children: allEntryWidgets,
+                  ),
+                ]),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  IconButton(
+                      onPressed: () {
+                        if (allEntryWidgets.length < 12) {
+                          addNewEntries();
+                        }
+                      },
+                      icon: Icon(Icons.add)),
+                  Ui.boxWidth(24),
+                  IconButton(
+                      onPressed: () {
+                        if (allEntryWidgets.length > 1) {
+                          removeLastEntries();
+                        }
+                      },
+                      icon: Icon(Icons.remove)),
+                ],
+              ),
+              AppDivider(),
+              CustomTextField("Calibrated By", calibByTec),
+              CustomTextField("Checked By", checkByTec),
+              AppDivider(),
+              AppButton(
+                onPressed: () async {
+                  entries.clear();
+                  int len = alltecs.length ~/ 9;
+
+                  for (var i = 0; i < len; i++) {
+                    entries.add(
+                        convertTecsToText(alltecs.sublist(i * 9, (i + 1) * 9)));
+                  }
+                  await controller.saveToolkitSheet(
+                      checkByTec.text, calibByTec.text, entries);
+                },
+                text: "Save",
               )
             ],
           ),
         ),
       ),
     );
+  }
+
+  addNewEntries() {
+    final ntecs = List.generate(9, (index) {
+      return TextEditingController(text: index == 0 ? "5000" : null);
+    });
+    alltecs.addAll(ntecs);
+    setState(() {
+      allEntryWidgets.add(EntryWidget(ntecs));
+    });
+  }
+
+  removeLastEntries() {
+    alltecs.removeRange(alltecs.length - 9, alltecs.length);
+    setState(() {
+      allEntryWidgets.removeLast();
+    });
+  }
+
+  List<String> convertTecsToText(List<TextEditingController> alltecss) {
+    return alltecss.map((e) => e.value.text).toList();
   }
 }

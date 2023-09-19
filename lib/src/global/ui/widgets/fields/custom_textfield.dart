@@ -16,7 +16,7 @@ class CustomTextField extends StatelessWidget {
   final bool autofocus, hasBottomPadding;
   final double fs;
   final FontWeight fw;
-  final bool readOnly, shdValidate;
+  final bool readOnly, shdValidate, isEntry;
   final TextAlign textAlign;
   final String? oldPass;
   const CustomTextField(this.hint, this.controller,
@@ -33,6 +33,7 @@ class CustomTextField extends StatelessWidget {
       this.customOnChanged,
       this.readOnly = false,
       this.shdValidate = true,
+      this.isEntry = false,
       this.textAlign = TextAlign.start,
       this.suffix,
       super.key});
@@ -47,7 +48,9 @@ class CustomTextField extends StatelessWidget {
 
     return StatefulBuilder(builder: (context, setState) {
       return SizedBox(
-        width: Ui.width(context) - 48,
+        width: isEntry
+            ? ((Ui.width(context) - 48) * 0.1667)
+            : Ui.width(context) - 48,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -234,7 +237,7 @@ class CustomTextField extends StatelessWidget {
                   Icons.keyboard_arrow_down_rounded,
                   color: AppColors.white,
                 ),
-                dropdownColor: AppColors.primaryColor,
+                dropdownColor: AppColors.textFieldColor,
                 items: options
                     .map((e) => DropdownMenuItem<String>(
                         value: e, child: AppText.thin(e)))

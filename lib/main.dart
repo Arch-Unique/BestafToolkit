@@ -52,7 +52,7 @@ class App extends StatelessWidget {
         throw FlutterError('...widget is null...');
       },
       initialRoute: AppRoutes.home,
-      title: 'Enter Title Here',
+      title: 'Bestaf Toolkit',
       getPages: AppPages.getPages,
       theme: ThemeData(
           scaffoldBackgroundColor: AppColors.primaryColorBackground,

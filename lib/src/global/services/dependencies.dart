@@ -26,7 +26,11 @@ class AppDependency {
     // Get.put(FacilityRepo());
 
     //controllers
-    Get.put(ToolkitController());
+    await Get.putAsync(() async {
+      final toolkitController = ToolkitController();
+      await toolkitController.initWorkSheet();
+      return toolkitController;
+    });
     // Get.put(DashboardController());
     // Get.put(FacilityController());
   }
