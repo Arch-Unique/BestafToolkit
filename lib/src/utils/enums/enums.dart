@@ -71,10 +71,11 @@ enum ToolkitModes {
 
 enum ToolkitLocation {
   tincan("TINCAN", 15, "SERAPHIN", "SERIES J", "16-58519-01",
-      "OPEN PROVER TANK", "5000"),
+      "OPEN PROVER TANK", "5000", -4.0),
   apapa("FOT APAPA", 6, "SERAPHIN", "SERIES J", "16-58519-01",
-      "OPEN PROVER TANK", "5000");
+      "OPEN PROVER TANK", "5000", -2.0);
 
+  final double factor;
   final String title,
       proverMake,
       proverModel,
@@ -89,5 +90,6 @@ enum ToolkitLocation {
       this.proverModel,
       this.proverSerialno,
       this.proverType,
-      this.proverCapacity);
+      this.proverCapacity,
+      this.factor);
 }

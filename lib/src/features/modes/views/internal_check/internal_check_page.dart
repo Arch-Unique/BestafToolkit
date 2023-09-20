@@ -30,6 +30,9 @@ class _InternalCheckPageState extends State<InternalCheckPage> {
   void initState() {
     // TODO: implement initState
     controller.mode = ToolkitModes.internalCheck;
+
+    controller.lane = controller.allMetersMap.entries.first.value;
+    controller.location = controller.lane.location;
     allEntryWidgets.add(EntryWidget(alltecs.sublist(0, 8)));
     super.initState();
   }
@@ -48,6 +51,8 @@ class _InternalCheckPageState extends State<InternalCheckPage> {
                 "Select Lane/Meter",
                 onChanged: (p0) {
                   controller.lane = controller.allMetersMap[p0]!;
+
+                  controller.location = controller.lane.location;
                 },
                 initOption: controller.lane.toString(),
               ),
