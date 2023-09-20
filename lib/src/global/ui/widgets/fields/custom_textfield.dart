@@ -48,9 +48,7 @@ class CustomTextField extends StatelessWidget {
 
     return StatefulBuilder(builder: (context, setState) {
       return SizedBox(
-        width: isEntry
-            ? ((Ui.width(context) - 48) * 0.1667)
-            : Ui.width(context) - 48,
+        width: isEntry ? 84 : Ui.width(context) - 48,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -146,7 +144,7 @@ class CustomTextField extends StatelessWidget {
                 hintStyle: TextStyle(
                     fontSize: fs,
                     fontWeight: FontWeight.w400,
-                    color: AppColors.disabledColor),
+                    color: AppColors.textColor.withOpacity(0.6)),
               ),
             ),
             SizedBox(

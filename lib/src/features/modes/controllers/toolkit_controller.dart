@@ -269,31 +269,31 @@ class ToolkitController extends GetxController {
   ];
 
   static const String locationKey = "B6";
-  static const String productKey = "AC6";
-  static const String laneKey = "AC7";
-  static const String checksKey = "AC8";
-  static const String nextdateKey = "AC9";
+  static const String productKey = "P6";
+  static const String laneKey = "P7";
+  static const String checksKey = "P8";
+  static const String nextdateKey = "P9";
   static const String dateKey = "B7";
-  static const String meterKey = "R10";
-  static const String makeKey = "R6";
-  static const String modelKey = "R7";
-  static const String serialnoKey = "R8";
-  static const String flowrangeKey = "R9";
+  static const String meterKey = "G10";
+  static const String makeKey = "G6";
+  static const String modelKey = "G7";
+  static const String serialnoKey = "G8";
+  static const String flowrangeKey = "G9";
 
   //prover meter
-  static const String typeKey = "I6";
-  static const String proverModelKey = "I7";
-  static const String proverSerialKey = "I8";
-  static const String proverCapacityKey = "I9";
-  static const String proverMakeKey = "I10";
+  static const String typeKey = "D6";
+  static const String proverModelKey = "D7";
+  static const String proverSerialKey = "D8";
+  static const String proverCapacityKey = "D9";
+  static const String proverMakeKey = "D10";
 
   //checks
-  static const String internalCheckKey = "R12";
-  static const String externalCalibKey = "X12";
-  static const String calibByKey = "E27";
-  static const String calibSigKey = "E29";
-  static const String checkByKey = "Z27";
-  static const String checkSigKey = "Z29";
+  static const String internalCheckKey = "G12";
+  static const String externalCalibKey = "J12";
+  static const String calibByKey = "C27";
+  static const String calibSigKey = "C29";
+  static const String checkByKey = "K27";
+  static const String checkSigKey = "K29";
 
   static const int sigWidth = 560;
   static const int sigHeight = 40;
@@ -301,14 +301,13 @@ class ToolkitController extends GetxController {
   static const int entryEndRow = 26;
 
   static const String programmedQtyKey = "B";
-  static const String meterVolKey = "H";
-  static const String referenceVolKey = "K";
-  static const String differenceVolKey = "R";
-  static const String flowRateKey = "U";
-  static const String adjustmentsKey = "Z";
-  static const String prevMeterFactorKey = "AA";
-  static const String newMeterFactorKey = "AB";
-  static const String remarksKey = "AC";
+  static const String meterVolKey = "C";
+  static const String referenceVolKey = "E";
+  static const String differenceVolKey = "G";
+  static const String flowRateKey = "J";
+  static const String adjustmentsKey = "L";
+  static const String meterFactorKey = "N";
+  static const String remarksKey = "P";
 
   final _mode = ToolkitModes.internalCheck.obs;
   final _location = ToolkitLocation.tincan.obs;
@@ -351,7 +350,7 @@ class ToolkitController extends GetxController {
 
   List<LaneMeter> get allMeters => _allMeters;
   Map<String, LaneMeter> get allMetersMap =>
-      {for (var e in _allMeters) "${e.location.title} - ${e.lane}": e};
+      {for (var e in _allMeters) e.toString(): e};
 
   _initLanes() {
     for (var element in allLanes) {
@@ -370,9 +369,15 @@ class ToolkitController extends GetxController {
 
   initWorkSheet() async {
     _initLanes();
-    ByteData data = await rootBundle.load('assets/json/toolkitsheet.xlsx');
-    var bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
-    excel = Excel.decodeBytes(bytes);
+    try {
+      ByteData data = await rootBundle.load('assets/json/toolkitsheet.xlsx');
+      var bytes =
+          data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+      excel = Excel.decodeBytes(bytes);
+    } on Exception catch (e) {
+      // TODO
+      print(e);
+    }
   }
 
   saveToolkitSheet(
@@ -422,6 +427,8 @@ class ToolkitController extends GetxController {
         _toolkitSheet.value.internalCheck);
     excel.updateCell("Sheet1", CellIndex.indexByString(externalCalibKey),
         _toolkitSheet.value.externalCalib);
+    excel.updateCell("Sheet1", CellIndex.indexByString(nextdateKey),
+        _toolkitSheet.value.nextdate);
     excel.updateCell("Sheet1", CellIndex.indexByString(checkByKey),
         _toolkitSheet.value.checkBy);
     excel.updateCell("Sheet1", CellIndex.indexByString(calibByKey),
@@ -458,22 +465,18 @@ class ToolkitController extends GetxController {
           _toolkitSheet.value.entry[i][5]);
       excel.updateCell(
           "Sheet1",
-          CellIndex.indexByString("$prevMeterFactorKey${entryStartRow + i}"),
+          CellIndex.indexByString("$meterFactorKey${entryStartRow + i}"),
           _toolkitSheet.value.entry[i][6]);
-      excel.updateCell(
-          "Sheet1",
-          CellIndex.indexByString("$newMeterFactorKey${entryStartRow + i}"),
-          _toolkitSheet.value.entry[i][7]);
+
       excel.updateCell(
           "Sheet1",
           CellIndex.indexByString("$remarksKey${entryStartRow + i}"),
-          _toolkitSheet.value.entry[i][8]);
+          _toolkitSheet.value.entry[i][7]);
     }
 
     var fileBytes = excel.save()!;
     var directory = await getTemporaryDirectory();
-    var nameOfFile =
-        "toolkitsheet-${DateTime.now().millisecondsSinceEpoch}.xlsx";
+    var nameOfFile = "toolkitsheet-${DateTime.now().millisecondsSinceEpoch}";
 
     final f = File('${directory.path}/$nameOfFile.xlsx')
       ..createSync(recursive: true)
@@ -491,14 +494,14 @@ class ToolkitController extends GetxController {
     final diff = proverVol - meterVol;
     final desiredDiff = batchVol + ddiff;
     double nkfactor = oldKFactor;
-    if (isApapa) {
-      if (desiredDiff - diff > 0) {
+    if (!isApapa) {
+      if (ddiff - diff > 0) {
         nkfactor = (meterVol * oldKFactor) / (desiredDiff);
       } else {
         nkfactor = (desiredDiff * oldKFactor) / (meterVol);
       }
     } else {
-      if (desiredDiff - diff > 0) {
+      if (ddiff - diff > 0) {
         nkfactor = (desiredDiff * oldKFactor) / (meterVol);
       } else {
         nkfactor = (meterVol * oldKFactor) / (desiredDiff);
@@ -506,5 +509,14 @@ class ToolkitController extends GetxController {
     }
 
     return nkfactor;
+  }
+
+  static double calcKFactorAtZero(double batchVol, double oldKFactor,
+      double ddiff, double proverVol, double meterVol, bool isApapa) {
+    final nkf =
+        calcKFactor(batchVol, oldKFactor, ddiff, proverVol, meterVol, isApapa);
+    final diff = proverVol - meterVol;
+
+    return ((oldKFactor * ddiff) - (nkf * diff)) / (ddiff - diff);
   }
 }

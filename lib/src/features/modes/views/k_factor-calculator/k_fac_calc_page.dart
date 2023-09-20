@@ -19,6 +19,7 @@ class _KFactorCalculatorPageState extends State<KFactorCalculatorPage> {
   List<TextEditingController> tecs =
       List.generate(10, (index) => TextEditingController());
   double nkfactor = 0;
+  double kfacat0 = 0;
   double diff = 0;
 
   @override
@@ -57,15 +58,15 @@ class _KFactorCalculatorPageState extends State<KFactorCalculatorPage> {
                 ToolkitLocation.values.map((e) => e.title).toList(),
                 tecs[0],
                 "Location",
-                onChanged: (p0) {
-                  controller.location = ToolkitLocation.values
-                      .firstWhere((element) => element.title == p0);
-                },
+                initOption: tecs[0].text.isEmpty
+                    ? ToolkitLocation.tincan.title
+                    : tecs[0].text,
               ),
               CustomTextField(
                 "Batch Volume",
                 tecs[1],
                 varl: FPL.number,
+                shdValidate: false,
               ),
               CustomTextField(
                 "Old K Factor",
@@ -100,8 +101,9 @@ class _KFactorCalculatorPageState extends State<KFactorCalculatorPage> {
                 shdValidate: false,
               ),
               AppDivider(),
-              AppText.medium(
-                  "K Factor at $diff - ${tecs[2].value.text}\nK Factor at ${tecs[3].value.text} - $nkfactor"),
+              if (nkfactor != 0 && kfacat0 != 0)
+                AppText.medium(
+                    "K Factor at 0.00 <-> ${kfacat0.toStringAsFixed(4)}\nK Factor at ${diff.toStringAsFixed(2)} <-> ${tecs[2].value.text}\nK Factor at ${double.parse(tecs[3].value.text.isEmpty ? "0" : tecs[3].value.text).toStringAsFixed(2)} <-> ${nkfactor.toStringAsFixed(4)}"),
               AppDivider(),
               AppButton(
                 onPressed: () {
@@ -120,7 +122,14 @@ class _KFactorCalculatorPageState extends State<KFactorCalculatorPage> {
                         double.parse(tecs[3].value.text),
                         double.parse(tecs[4].value.text),
                         double.parse(tecs[5].value.text),
-                        tecs[0].value.text == "APAPA");
+                        tecs[0].value.text == ToolkitLocation.apapa.title);
+                    kfacat0 = ToolkitController.calcKFactorAtZero(
+                        double.parse(tecs[1].value.text),
+                        double.parse(tecs[2].value.text),
+                        double.parse(tecs[3].value.text),
+                        double.parse(tecs[4].value.text),
+                        double.parse(tecs[5].value.text),
+                        tecs[0].value.text == ToolkitLocation.apapa.title);
                   });
                 },
                 text: "Calculate",

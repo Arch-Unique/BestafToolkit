@@ -12,12 +12,13 @@ enum PasswordStrength {
 
 enum FPL {
   email(TextInputType.emailAddress),
-  number(TextInputType.number),
+  number(TextInputType.numberWithOptions(decimal: true, signed: true)),
   text(TextInputType.text),
   password(TextInputType.visiblePassword),
   multi(TextInputType.multiline, maxLength: 1000, maxLines: 5),
   phone(TextInputType.phone),
-  money(TextInputType.number),
+  money(TextInputType.numberWithOptions(decimal: true, signed: true),
+      maxLength: 20),
 
   //card details
   cvv(TextInputType.number, maxLength: 4),

@@ -14,4 +14,9 @@ class LaneMeter {
       this.model = "",
       this.serialno = "",
       this.flowrange = ""});
+
+  @override
+  String toString() {
+    return "${location.title} - $lane";
+  }
 }

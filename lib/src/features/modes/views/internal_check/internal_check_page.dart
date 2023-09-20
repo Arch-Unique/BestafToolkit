@@ -17,8 +17,8 @@ class InternalCheckPage extends StatefulWidget {
 
 class _InternalCheckPageState extends State<InternalCheckPage> {
   final controller = Get.find<ToolkitController>();
-  List<TextEditingController> alltecs = List.generate(9, (index) {
-    return TextEditingController(text: index == 0 ? "5000" : null);
+  List<TextEditingController> alltecs = List.generate(8, (index) {
+    return TextEditingController();
   });
   TextEditingController calibByTec = TextEditingController();
   TextEditingController checkByTec = TextEditingController();
@@ -30,7 +30,7 @@ class _InternalCheckPageState extends State<InternalCheckPage> {
   void initState() {
     // TODO: implement initState
     controller.mode = ToolkitModes.internalCheck;
-    allEntryWidgets.add(EntryWidget(alltecs.sublist(0, 9)));
+    allEntryWidgets.add(EntryWidget(alltecs.sublist(0, 8)));
     super.initState();
   }
 
@@ -49,11 +49,12 @@ class _InternalCheckPageState extends State<InternalCheckPage> {
                 onChanged: (p0) {
                   controller.lane = controller.allMetersMap[p0]!;
                 },
+                initOption: controller.lane.toString(),
               ),
               AppDivider(),
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
-                child: Row(children: [
+                child: Column(children: [
                   EntryHeader(),
                   Column(
                     children: allEntryWidgets,
@@ -87,11 +88,11 @@ class _InternalCheckPageState extends State<InternalCheckPage> {
               AppButton(
                 onPressed: () async {
                   entries.clear();
-                  int len = alltecs.length ~/ 9;
+                  int len = alltecs.length ~/ 8;
 
                   for (var i = 0; i < len; i++) {
                     entries.add(
-                        convertTecsToText(alltecs.sublist(i * 9, (i + 1) * 9)));
+                        convertTecsToText(alltecs.sublist(i * 8, (i + 1) * 8)));
                   }
                   await controller.saveToolkitSheet(
                       checkByTec.text, calibByTec.text, entries);
@@ -106,8 +107,8 @@ class _InternalCheckPageState extends State<InternalCheckPage> {
   }
 
   addNewEntries() {
-    final ntecs = List.generate(9, (index) {
-      return TextEditingController(text: index == 0 ? "5000" : null);
+    final ntecs = List.generate(8, (index) {
+      return TextEditingController();
     });
     alltecs.addAll(ntecs);
     setState(() {
@@ -116,7 +117,7 @@ class _InternalCheckPageState extends State<InternalCheckPage> {
   }
 
   removeLastEntries() {
-    alltecs.removeRange(alltecs.length - 9, alltecs.length);
+    alltecs.removeRange(alltecs.length - 8, alltecs.length);
     setState(() {
       allEntryWidgets.removeLast();
     });
