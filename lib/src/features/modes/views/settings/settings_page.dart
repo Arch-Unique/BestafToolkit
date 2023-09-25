@@ -1,4 +1,5 @@
 import 'package:bestaf_toolkit/src/features/modes/views/settings/lane_meters_page.dart';
+import 'package:bestaf_toolkit/src/features/modes/views/settings/ref.dart';
 import 'package:bestaf_toolkit/src/global/ui/ui_barrel.dart';
 import 'package:bestaf_toolkit/src/global/ui/widgets/others/containers.dart';
 import 'package:bestaf_toolkit/src/src_barrel.dart';
@@ -15,7 +16,7 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   final screens = [
     LaneMeterspage(),
-    LaneMeterspage(),
+    RefInstrumentsPage(),
   ];
   @override
   Widget build(BuildContext context) {

@@ -14,6 +14,7 @@ import 'package:printing/printing.dart';
 import 'package:pdf/pdf.dart';
 
 import '../../../src_barrel.dart';
+import '../../../utils/constants/prefs/prefs.dart';
 import '../models/lanemeter.dart';
 import '../models/toolkitsheet.dart';
 
@@ -130,8 +131,8 @@ class ToolkitController extends GetxController {
       {for (var e in _allRefs) e.toString(): e};
 
   _initLanes() {
-    _allMeters.value = appService.getLaneMeters();
-    _allRefs.value = appService.getRefInstruments();
+    _allMeters.value = getLaneMeters();
+    _allRefs.value = getRefInstruments();
   }
 
   initWorkSheet() async {
@@ -204,51 +205,6 @@ class ToolkitController extends GetxController {
       ..add(ImageContent(checkSigKey, _toolkitSheet.value.checkSig))
       ..add(ImageContent(calibSigKey, _toolkitSheet.value.calibSig));
 
-    // excel.updateCell("Sheet1", CellIndex.indexByString(locationKey),
-    //     _toolkitSheet.value.location.title);
-    // excel.updateCell("Sheet1", CellIndex.indexByString(dateKey),
-    //     DateFormat("dd/MM/yyyy").format(DateTime.now()));
-    // excel.updateCell("Sheet1", CellIndex.indexByString(typeKey),
-    //     _toolkitSheet.value.location.proverType);
-    // excel.updateCell("Sheet1", CellIndex.indexByString(proverModelKey),
-    //     _toolkitSheet.value.location.proverModel);
-    // excel.updateCell("Sheet1", CellIndex.indexByString(proverSerialKey),
-    //     _toolkitSheet.value.location.proverSerialno);
-    // excel.updateCell("Sheet1", CellIndex.indexByString(proverCapacityKey),
-    //     _toolkitSheet.value.location.proverCapacity);
-    // excel.updateCell("Sheet1", CellIndex.indexByString(proverMakeKey),
-    //     _toolkitSheet.value.location.proverMake);
-    // excel.updateCell("Sheet1", CellIndex.indexByString(makeKey),
-    //     _toolkitSheet.value.laneMeter.make);
-    // excel.updateCell("Sheet1", CellIndex.indexByString(modelKey),
-    // _toolkitSheet.value.laneMeter.model);
-    // excel.updateCell("Sheet1", CellIndex.indexByString(serialnoKey),
-    //     _toolkitSheet.value.laneMeter.serialno);
-    // excel.updateCell("Sheet1", CellIndex.indexByString(flowrangeKey),
-    //     _toolkitSheet.value.laneMeter.flowrange);
-    // excel.updateCell("Sheet1", CellIndex.indexByString(meterKey),
-    //     _toolkitSheet.value.laneMeter.lane);
-    // excel.updateCell("Sheet1", CellIndex.indexByString(productKey),
-    //     _toolkitSheet.value.laneMeter.product);
-    // excel.updateCell("Sheet1", CellIndex.indexByString(laneKey),
-    // _toolkitSheet.value.laneMeter.lane);
-    // excel.updateCell("Sheet1", CellIndex.indexByString(checksKey),
-    //     _toolkitSheet.value.checks);
-    // excel.updateCell("Sheet1", CellIndex.indexByString(internalCheckKey),
-    //     _toolkitSheet.value.internalCheck);
-    // excel.updateCell("Sheet1", CellIndex.indexByString(externalCalibKey),
-    //     _toolkitSheet.value.externalCalib);
-    // excel.updateCell("Sheet1", CellIndex.indexByString(nextdateKey),
-    //     _toolkitSheet.value.nextdate);
-    // excel.updateCell("Sheet1", CellIndex.indexByString(checkByKey),
-    //     _toolkitSheet.value.checkBy);
-    // excel.updateCell("Sheet1", CellIndex.indexByString(calibByKey),
-    //     _toolkitSheet.value.calibBy);
-    // excel.updateCell("Sheet1", CellIndex.indexByString(checkSigKey),
-    //     _toolkitSheet.value.checkSig);
-    // excel.updateCell("Sheet1", CellIndex.indexByString(calibSigKey),
-    //     _toolkitSheet.value.calibSig);
-
     print(_toolkitSheet.value.entry.length);
 
     for (var i = 0; i < _toolkitSheet.value.entry.length; i++) {
@@ -267,46 +223,22 @@ class ToolkitController extends GetxController {
       ]));
     }
 
-    // for (var i = 0; i < _toolkitSheet.value.entry.length; i++) {
-    //   excel.updateCell(
-    //       "Sheet1",
-    //       CellIndex.indexByString("$programmedQtyKey${entryStartRow + i}"),
-    //       _toolkitSheet.value.entry[i][0]);
-    //   excel.updateCell(
-    //       "Sheet1",
-    //       CellIndex.indexByString("$meterVolKey${entryStartRow + i}"),
-    //       _toolkitSheet.value.entry[i][1]);
-    //   excel.updateCell(
-    //       "Sheet1",
-    //       CellIndex.indexByString("$referenceVolKey${entryStartRow + i}"),
-    //       _toolkitSheet.value.entry[i][2]);
-    //   excel.updateCell(
-    //       "Sheet1",
-    //       CellIndex.indexByString("$differenceVolKey${entryStartRow + i}"),
-    //       _toolkitSheet.value.entry[i][3]);
-    //   excel.updateCell(
-    //       "Sheet1",
-    //       CellIndex.indexByString("$flowRateKey${entryStartRow + i}"),
-    //       _toolkitSheet.value.entry[i][4]);
-    //   excel.updateCell(
-    //       "Sheet1",
-    //       CellIndex.indexByString("$adjustmentsKey${entryStartRow + i}"),
-    //       _toolkitSheet.value.entry[i][5]);
-    //   excel.updateCell(
-    //       "Sheet1",
-    //       CellIndex.indexByString("$meterFactorKey${entryStartRow + i}"),
-    //       _toolkitSheet.value.entry[i][6]);
+    for (var i = _toolkitSheet.value.entry.length; i < 11; i++) {
+      c.add(TableContent("l${i + 1}", [
+        RowContent()
+          ..add(TextContent("no", "${i + 1}"))
+          ..add(TextContent(programmedQtyKey, ""))
+          ..add(TextContent(meterVolKey, ""))
+          ..add(TextContent(referenceVolKey, ""))
+          ..add(TextContent(differenceVolKey, ""))
+          ..add(TextContent(flowRateKey, ""))
+          ..add(TextContent(adjustmentsKey, ""))
+          ..add(TextContent(oldKFactorKey, ""))
+          ..add(TextContent(newKFactorKey, ""))
+          ..add(TextContent(remarksKey, ""))
+      ]));
+    }
 
-    //   excel.updateCell(
-    //       "Sheet1",
-    //       CellIndex.indexByString("$remarksKey${entryStartRow + i}"),
-    //       _toolkitSheet.value.entry[i][7]);
-    // }
-
-    // a3:k29
-    // excel.sheets["Sheet1"].
-
-    // var fileBytes = excel.save()!;
     final f = await _saveDocx(c);
     return f;
   }
@@ -351,15 +283,7 @@ class ToolkitController extends GetxController {
       );
 
       if (response.statusCode == 200) {
-        // print(response.data);
-
-        final pdfBytes = Uint8List.fromList(response.data);
-        // print(pdfBytes);
-        // f = File('${directory.path}/$nameOfFile.pdf')
-        //   ..createSync(recursive: true)
-        //   ..writeAsBytesSync(pdfBytes);
-        // print(f.path);
-        return pdfBytes;
+        return Uint8List.fromList(response.data);
       } else {
         print('Conversion failed with status code ${response.statusCode}');
       }
@@ -373,6 +297,82 @@ class ToolkitController extends GetxController {
     await Printing.layoutPdf(
       onLayout: (PdfPageFormat format) async => _fetchSomeData(f),
     );
+  }
+
+  List<LaneMeter> getLaneMeters() {
+    List<dynamic>? allLaneMeters =
+        appService.prefService.get(MyPrefs.mpLanemeters);
+    return allLaneMeters!.map((e) => LaneMeter.fromString(e)).toList();
+  }
+
+  addLaneMeter(LaneMeter a) async {
+    List<dynamic>? allLaneMeters =
+        appService.prefService.get(MyPrefs.mpLanemeters) ?? [];
+
+    allLaneMeters.add(a.toSaveAsString());
+    _allMeters.value =
+        allLaneMeters.map((e) => LaneMeter.fromString(e)).toList();
+
+    await appService.prefService.save(MyPrefs.mpLanemeters, allLaneMeters);
+  }
+
+  removeLaneMeter(int a) async {
+    List<dynamic>? allLaneMeters =
+        appService.prefService.get(MyPrefs.mpLanemeters) ?? [];
+
+    allLaneMeters.removeAt(a);
+    _allMeters.value =
+        allLaneMeters.map((e) => LaneMeter.fromString(e)).toList();
+
+    await appService.prefService.save(MyPrefs.mpLanemeters, allLaneMeters);
+  }
+
+  editLaneMeter(int b, LaneMeter a) async {
+    List<dynamic>? allLaneMeters =
+        appService.prefService.get(MyPrefs.mpLanemeters) ?? [];
+
+    allLaneMeters[b] = a.toSaveAsString();
+    _allMeters.value =
+        allLaneMeters.map((e) => LaneMeter.fromString(e)).toList();
+
+    await appService.prefService.save(MyPrefs.mpLanemeters, allLaneMeters);
+  }
+
+  //REF INSTRUMENTS
+  List<RefInstrument> getRefInstruments() {
+    List<dynamic>? allRefs =
+        appService.prefService.get(MyPrefs.mpRefInstruments);
+    return allRefs!.map((e) => RefInstrument.fromString(e)).toList();
+  }
+
+  addRefInstrument(RefInstrument a) async {
+    List<dynamic>? allRefs =
+        appService.prefService.get(MyPrefs.mpRefInstruments) ?? [];
+
+    allRefs.add(a.toSaveAsString());
+    _allRefs.value = allRefs.map((e) => RefInstrument.fromString(e)).toList();
+
+    await appService.prefService.save(MyPrefs.mpRefInstruments, allRefs);
+  }
+
+  removeRefInstrument(int a) async {
+    List<dynamic>? allRefs =
+        appService.prefService.get(MyPrefs.mpRefInstruments) ?? [];
+
+    allRefs.removeAt(a);
+    _allRefs.value = allRefs.map((e) => RefInstrument.fromString(e)).toList();
+
+    await appService.prefService.save(MyPrefs.mpRefInstruments, allRefs);
+  }
+
+  editRefInstrument(int b, RefInstrument a) async {
+    List<dynamic>? allRefs =
+        appService.prefService.get(MyPrefs.mpRefInstruments) ?? [];
+
+    allRefs[b] = a.toSaveAsString();
+    _allRefs.value = allRefs.map((e) => RefInstrument.fromString(e)).toList();
+
+    await appService.prefService.save(MyPrefs.mpRefInstruments, allRefs);
   }
 
   static double calcKFactor(double batchVol, double oldKFactor, double ddiff,

@@ -32,6 +32,8 @@ class _ExternalCalibPageState extends State<ExternalCalibPage> {
     // TODO: implement initState
     controller.mode = ToolkitModes.externalCalibration;
     controller.lane = controller.allMetersMap.entries.first.value;
+    controller.ref = controller.allRefsMap.entries.first.value;
+
     controller.location = controller.lane.location;
 
     allEntryWidgets.add(EntryWidget(alltecs.sublist(0, 9)));
@@ -136,7 +138,7 @@ class _ExternalCalibPageState extends State<ExternalCalibPage> {
                                                           ToolkitLocation
                                                               .apapa);
                                               alltecs[(len * 9) - 2].text =
-                                                  kfac.toString();
+                                                  kfac.toStringAsFixed(4);
                                               alltecs[(len * 9) - 4].text = "Y";
                                               Get.back();
                                             },

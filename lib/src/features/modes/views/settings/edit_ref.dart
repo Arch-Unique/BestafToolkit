@@ -39,8 +39,9 @@ class _EditRefInstrumentState extends State<EditRefInstrument> {
   @override
   Widget build(BuildContext context) {
     return SinglePageScaffold(
-      title:
-          widget.lm == null ? "Add New Meter" : "Edit ${widget.lm.toString()}",
+      title: widget.lm == null
+          ? "Add New Reference Instrument"
+          : "Edit ${widget.lm.toString()}",
       child: SingleChildScrollView(
         child: Ui.padding(
           child: Column(
@@ -49,11 +50,12 @@ class _EditRefInstrumentState extends State<EditRefInstrument> {
               CustomTextField("Model", tecs[1]),
               CustomTextField("Serial No", tecs[2]),
               CustomTextField("Capacity", tecs[3]),
-              CustomTextField("Type", tecs[5]),
+              CustomTextField("Type", tecs[4]),
               CustomTextField.dropdown(
                   ToolkitLocation.values.map((e) => e.title).toList(),
-                  tecs[6],
-                  "Location"),
+                  tecs[5],
+                  "Location",
+                  initOption: tecs[5].text),
               AppButton(
                 onPressed: () {
                   if (tecs[0].text.isEmpty ||
@@ -67,7 +69,7 @@ class _EditRefInstrumentState extends State<EditRefInstrument> {
                   }
 
                   if (widget.lm == null) {
-                    controller.appService.addRefInstrument(RefInstrument(
+                    controller.addRefInstrument(RefInstrument(
                       location: ToolkitLocation.values.firstWhere(
                           (element) => element.title == tecs[5].text),
                       make: tecs[0].text,
@@ -77,7 +79,7 @@ class _EditRefInstrumentState extends State<EditRefInstrument> {
                       type: tecs[4].text,
                     ));
                   } else {
-                    controller.appService.editRefInstrument(
+                    controller.editRefInstrument(
                         widget.index,
                         RefInstrument(
                           location: ToolkitLocation.values.firstWhere(

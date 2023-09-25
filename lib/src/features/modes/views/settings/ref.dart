@@ -14,7 +14,8 @@ class RefInstrumentsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: backAppBar(title: "Lane Meters", hasBack: true, trailing: [
+      appBar:
+          backAppBar(title: "Reference Instruments", hasBack: true, trailing: [
         IconButton(
             onPressed: () {
               Get.to(EditRefInstrument());
@@ -24,38 +25,41 @@ class RefInstrumentsPage extends StatelessWidget {
               color: AppColors.primaryColor,
             ))
       ]),
-      body: ListView.separated(
-          itemBuilder: (_, i) {
-            return ListTile(
-              title: AppText.medium(controller.allRefs[i].toString()),
-              onTap: () {
-                Get.to(EditRefInstrument(
-                  index: i,
-                  lm: controller.allRefs[i],
-                ));
-              },
-              trailing: IconButton(
-                  onPressed: () {
-                    showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AppDialog.normal("CONFIRMATION",
-                              "Are you sure you want to delete ${controller.allRefs[i].toString()}",
-                              onPressedA: () async {
-                            //delete
-                            await controller.appService.removeRefInstrument(i);
-                          }, onPressedB: () {
-                            Get.back();
+      body: Obx(() {
+        return ListView.separated(
+            itemBuilder: (_, i) {
+              return ListTile(
+                title: AppText.medium(controller.allRefs[i].toString()),
+                onTap: () {
+                  Get.to(EditRefInstrument(
+                    index: i,
+                    lm: controller.allRefs[i],
+                  ));
+                },
+                trailing: IconButton(
+                    onPressed: () {
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AppDialog.normal("CONFIRMATION",
+                                "Are you sure you want to delete ${controller.allRefs[i].toString()}",
+                                onPressedA: () async {
+                              //delete
+                              await controller.removeRefInstrument(i);
+                              Get.back();
+                            }, onPressedB: () {
+                              Get.back();
+                            });
                           });
-                        });
-                  },
-                  icon: Icon(Icons.delete)),
-            );
-          },
-          separatorBuilder: (_, i) {
-            return AppDivider();
-          },
-          itemCount: controller.allRefs.length),
+                    },
+                    icon: Icon(Icons.delete)),
+              );
+            },
+            separatorBuilder: (_, i) {
+              return AppDivider();
+            },
+            itemCount: controller.allRefs.length);
+      }),
     );
   }
 }

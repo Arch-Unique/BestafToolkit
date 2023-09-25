@@ -60,7 +60,8 @@ class _EditLaneMeterState extends State<EditLaneMeter> {
               CustomTextField.dropdown(
                   ToolkitLocation.values.map((e) => e.title).toList(),
                   tecs[6],
-                  "Location"),
+                  "Location",
+                  initOption: tecs[6].text),
               AppButton(
                 onPressed: () {
                   if (tecs[0].text.isEmpty ||
@@ -75,7 +76,7 @@ class _EditLaneMeterState extends State<EditLaneMeter> {
                   }
 
                   if (widget.lm == null) {
-                    controller.appService.addLaneMeter(LaneMeter(
+                    controller.addLaneMeter(LaneMeter(
                       location: ToolkitLocation.values.firstWhere(
                           (element) => element.title == tecs[6].text),
                       make: tecs[0].text,
@@ -86,7 +87,7 @@ class _EditLaneMeterState extends State<EditLaneMeter> {
                       checks: int.parse(tecs[5].text),
                     ));
                   } else {
-                    controller.appService.editLaneMeter(
+                    controller.editLaneMeter(
                         widget.index,
                         LaneMeter(
                           location: ToolkitLocation.values.firstWhere(

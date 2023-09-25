@@ -24,38 +24,41 @@ class LaneMeterspage extends StatelessWidget {
               color: AppColors.primaryColor,
             ))
       ]),
-      body: ListView.separated(
-          itemBuilder: (_, i) {
-            return ListTile(
-              title: AppText.medium(controller.allMeters[i].toString()),
-              onTap: () {
-                Get.to(EditLaneMeter(
-                  index: i,
-                  lm: controller.allMeters[i],
-                ));
-              },
-              trailing: IconButton(
-                  onPressed: () {
-                    showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AppDialog.normal("CONFIRMATION",
-                              "Are you sure you want to delete ${controller.allMeters[i].toString()}",
-                              onPressedA: () async {
-                            //delete
-                            await controller.appService.removeLaneMeter(i);
-                          }, onPressedB: () {
-                            Get.back();
+      body: Obx(() {
+        return ListView.separated(
+            itemBuilder: (_, i) {
+              return ListTile(
+                title: AppText.medium(controller.allMeters[i].toString()),
+                onTap: () {
+                  Get.to(EditLaneMeter(
+                    index: i,
+                    lm: controller.allMeters[i],
+                  ));
+                },
+                trailing: IconButton(
+                    onPressed: () {
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AppDialog.normal("CONFIRMATION",
+                                "Are you sure you want to delete ${controller.allMeters[i].toString()}",
+                                onPressedA: () async {
+                              //delete
+                              await controller.removeLaneMeter(i);
+                              Get.back();
+                            }, onPressedB: () {
+                              Get.back();
+                            });
                           });
-                        });
-                  },
-                  icon: Icon(Icons.delete)),
-            );
-          },
-          separatorBuilder: (_, i) {
-            return AppDivider();
-          },
-          itemCount: controller.allMeters.length),
+                    },
+                    icon: Icon(Icons.delete)),
+              );
+            },
+            separatorBuilder: (_, i) {
+              return AppDivider();
+            },
+            itemCount: controller.allMeters.length);
+      }),
     );
   }
 }

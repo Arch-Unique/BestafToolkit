@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:bestaf_toolkit/src/features/modes/controllers/toolkit_controller.dart';
@@ -122,14 +123,23 @@ class EntryHeader extends StatelessWidget {
   }
 }
 
-class SignatureView extends StatelessWidget {
+class SignatureView extends StatefulWidget {
   const SignatureView(this.isCheck, {super.key});
   final bool isCheck;
 
   @override
+  State<SignatureView> createState() => _SignatureViewState();
+}
+
+class _SignatureViewState extends State<SignatureView> {
+  bool isCaptured = false;
+  Uint8List? bytes;
+  final controller = Get.find<ToolkitController>();
+
+  GlobalKey<SfSignaturePadState> signaturePadKey = GlobalKey();
+
+  @override
   Widget build(BuildContext context) {
-    GlobalKey<SfSignaturePadState> _signaturePadKey = GlobalKey();
-    final controller = Get.find<ToolkitController>();
     return Column(
       children: [
         Container(
@@ -137,29 +147,42 @@ class SignatureView extends StatelessWidget {
               border: Border.all(color: AppColors.black, width: 1)),
           height: 84,
           width: 480,
-          child: SfSignaturePad(
-            key: _signaturePadKey,
-            backgroundColor: AppColors.white,
-          ),
+          child: isCaptured && bytes != null
+              ? Image.memory(bytes!)
+              : SfSignaturePad(
+                  key: signaturePadKey,
+                  backgroundColor: AppColors.white,
+                ),
         ),
         Ui.boxHeight(24),
         AppButton.row(
           "Capture",
           () async {
-            ui.Image image = await _signaturePadKey.currentState!.toImage();
+            ui.Image image = await signaturePadKey.currentState!.toImage();
             var data = await image.toByteData(format: ui.ImageByteFormat.png);
             final dd = data!.buffer.asUint8List();
 
-            if (isCheck) {
+            if (widget.isCheck) {
               controller.checkSig = dd;
             } else {
               controller.calibSig = dd;
             }
             Ui.showInfo("Signature captured");
+            setState(() {
+              bytes = dd;
+              isCaptured = true;
+            });
           },
           "Clear",
           () {
-            _signaturePadKey.currentState!.clear();
+            if (isCaptured) {
+              setState(() {
+                isCaptured = false;
+                bytes = null;
+              });
+            } else {
+              signaturePadKey.currentState!.clear();
+            }
           },
         )
       ],
@@ -173,63 +196,75 @@ class EntryDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<ToolkitController>();
-    return Row(
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            AppText.medium("Reference Details"),
-            Obx(() {
-              return AppText.thin("TYPE: ${controller.ref.type}");
-            }),
-            Obx(() {
-              return AppText.thin("MODEL: ${controller.ref.model}");
-            }),
-            Obx(() {
-              return AppText.thin("SERIAL NO: ${controller.ref.serialno}");
-            }),
-            Obx(() {
-              return AppText.thin("CAPACITY: ${controller.lane.flowrange}");
-            }),
-            Obx(() {
-              return AppText.thin("MAKE: ${controller.ref.make}");
-            }),
-            AppButton.white(() {
-              Get.to(EditRefInstrument(
-                  index: controller.allRefs.indexWhere((element) =>
-                      element.toString() == controller.ref.toString()),
-                  lm: controller.ref));
-            }, "Edit")
-          ],
-        ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            AppText.medium("Meter Details"),
-            Obx(() {
-              return AppText.thin("MAKE: ${controller.lane.make}");
-            }),
-            Obx(() {
-              return AppText.thin("MODEL: ${controller.lane.model}");
-            }),
-            Obx(() {
-              return AppText.thin("SERIAL NO: ${controller.lane.serialno}");
-            }),
-            Obx(() {
-              return AppText.thin("FLOW RANGE: ${controller.lane.flowrange}");
-            }),
-            Obx(() {
-              return AppText.thin("PRODUCT TYPE: ${controller.lane.product}");
-            }),
-            AppButton.white(() {
-              Get.to(EditLaneMeter(
-                  index: controller.allMeters.indexWhere((element) =>
-                      element.toString() == controller.lane.toString()),
-                  lm: controller.lane));
-            }, "Edit")
-          ],
-        ),
-      ],
+    return SizedBox(
+      width: Ui.width(context) - 48,
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                AppText.medium("Reference Details"),
+                Obx(() {
+                  return AppText.thin("TYPE: ${controller.ref.type}");
+                }),
+                Obx(() {
+                  return AppText.thin("MODEL: ${controller.ref.model}");
+                }),
+                Obx(() {
+                  return AppText.thin("SERIAL NO: ${controller.ref.serialno}");
+                }),
+                Obx(() {
+                  return AppText.thin("CAPACITY: ${controller.lane.flowrange}");
+                }),
+                Obx(() {
+                  return AppText.thin("MAKE: ${controller.ref.make}");
+                }),
+                AppButton.white(() {
+                  Get.to(EditRefInstrument(
+                      index: controller.allRefs.indexWhere((element) =>
+                          element.toString() == controller.ref.toString()),
+                      lm: controller.ref));
+                }, "Edit")
+              ],
+            ),
+          ),
+          Ui.boxWidth(48),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                AppText.medium("Meter Details"),
+                Obx(() {
+                  return AppText.thin("MAKE: ${controller.lane.make}");
+                }),
+                Obx(() {
+                  return AppText.thin("MODEL: ${controller.lane.model}");
+                }),
+                Obx(() {
+                  return AppText.thin("SERIAL NO: ${controller.lane.serialno}");
+                }),
+                Obx(() {
+                  return AppText.thin(
+                      "FLOW RANGE: ${controller.lane.flowrange}");
+                }),
+                Obx(() {
+                  return AppText.thin(
+                      "PRODUCT TYPE: ${controller.lane.product}");
+                }),
+                AppButton.white(() {
+                  Get.to(EditLaneMeter(
+                      index: controller.allMeters.indexWhere((element) =>
+                          element.toString() == controller.lane.toString()),
+                      lm: controller.lane));
+                }, "Edit")
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

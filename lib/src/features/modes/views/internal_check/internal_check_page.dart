@@ -33,6 +33,7 @@ class _InternalCheckPageState extends State<InternalCheckPage> {
     controller.mode = ToolkitModes.internalCheck;
 
     controller.lane = controller.allMetersMap.entries.first.value;
+    controller.ref = controller.allRefsMap.entries.first.value;
     controller.location = controller.lane.location;
     allEntryWidgets.add(EntryWidget(alltecs.sublist(0, 9)));
     super.initState();
@@ -120,6 +121,7 @@ class _InternalCheckPageState extends State<InternalCheckPage> {
                   "Print",
                   () async {
                     entries.clear();
+
                     int len = alltecs.length ~/ 9;
 
                     for (var i = 0; i < len; i++) {

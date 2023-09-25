@@ -291,8 +291,10 @@ class AppService extends GetxService {
   ];
 
   initUserConfig() async {
-    await _initLaneMeters();
     await _hasOpened();
+
+    await _initLaneMeters();
+    await _initRefInstrument();
     await _setLoginStatus();
     if (isLoggedIn.value) {
       await _setCurrentUser();
@@ -375,10 +377,11 @@ class AppService extends GetxService {
     if (hasOpenedOnboarding.value == true) {
       return;
     }
+
     print("start initing lanes");
 
     for (var i = 0; i < allLanes.length; i++) {
-      await addLaneMeter(LaneMeter(
+      await _addLaneMeter(LaneMeter(
         enabled: allLanes[i][9],
         location: allLanes[i][1],
         product: allLanes[i][2],
@@ -393,29 +396,10 @@ class AppService extends GetxService {
     print("done initing lanes");
   }
 
-  List<LaneMeter> getLaneMeters() {
-    List<dynamic>? allLaneMeters = prefService.get(MyPrefs.mpLanemeters);
-    return allLaneMeters!.map((e) => LaneMeter.fromString(e)).toList();
-  }
-
-  addLaneMeter(LaneMeter a) async {
+  _addLaneMeter(LaneMeter a) async {
     List<dynamic>? allLaneMeters = prefService.get(MyPrefs.mpLanemeters) ?? [];
 
     allLaneMeters.add(a.toSaveAsString());
-    await prefService.save(MyPrefs.mpLanemeters, allLaneMeters);
-  }
-
-  removeLaneMeter(int a) async {
-    List<dynamic>? allLaneMeters = prefService.get(MyPrefs.mpLanemeters) ?? [];
-
-    allLaneMeters.removeAt(a);
-    await prefService.save(MyPrefs.mpLanemeters, allLaneMeters);
-  }
-
-  editLaneMeter(int b, LaneMeter a) async {
-    List<dynamic>? allLaneMeters = prefService.get(MyPrefs.mpLanemeters) ?? [];
-
-    allLaneMeters[b] = a.toSaveAsString();
     await prefService.save(MyPrefs.mpLanemeters, allLaneMeters);
   }
 
@@ -425,41 +409,22 @@ class AppService extends GetxService {
       return;
     }
 
-    for (var i = 0; i < allLanes.length; i++) {
-      await addRefInstrument(RefInstrument(
-        location: allLanes[i][0],
-        capacity: allLanes[i][5],
-        make: allLanes[i][1],
-        model: allLanes[i][2],
-        serialno: allLanes[i][3],
-        type: allLanes[i][4],
+    for (var i = 0; i < allRefInstruments.length; i++) {
+      await _addRefInstrument(RefInstrument(
+        location: allRefInstruments[i][0],
+        capacity: allRefInstruments[i][5],
+        make: allRefInstruments[i][1],
+        model: allRefInstruments[i][2],
+        serialno: allRefInstruments[i][3],
+        type: allRefInstruments[i][4],
       ));
     }
   }
 
-  List<RefInstrument> getRefInstruments() {
-    List<dynamic>? allRefs = prefService.get(MyPrefs.mpRefInstruments);
-    return allRefs!.map((e) => RefInstrument.fromString(e)).toList();
-  }
-
-  addRefInstrument(RefInstrument a) async {
+  _addRefInstrument(RefInstrument a) async {
     List<dynamic>? allRefs = prefService.get(MyPrefs.mpRefInstruments) ?? [];
 
     allRefs.add(a.toSaveAsString());
-    await prefService.save(MyPrefs.mpRefInstruments, allRefs);
-  }
-
-  removeRefInstrument(int a) async {
-    List<dynamic>? allRefs = prefService.get(MyPrefs.mpRefInstruments) ?? [];
-
-    allRefs.removeAt(a);
-    await prefService.save(MyPrefs.mpRefInstruments, allRefs);
-  }
-
-  editRefInstrument(int b, RefInstrument a) async {
-    List<dynamic>? allRefs = prefService.get(MyPrefs.mpRefInstruments) ?? [];
-
-    allRefs[b] = a.toSaveAsString();
     await prefService.save(MyPrefs.mpRefInstruments, allRefs);
   }
 }
