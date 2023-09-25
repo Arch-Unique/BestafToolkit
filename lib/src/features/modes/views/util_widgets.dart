@@ -1,8 +1,16 @@
+import 'dart:convert';
+import 'dart:ui' as ui;
+
+import 'package:bestaf_toolkit/src/features/modes/controllers/toolkit_controller.dart';
+import 'package:bestaf_toolkit/src/features/modes/views/settings/edit_lanemeter_page.dart';
 import 'package:bestaf_toolkit/src/global/ui/ui_barrel.dart';
 import 'package:bestaf_toolkit/src/global/ui/widgets/fields/custom_textfield.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:syncfusion_flutter_signaturepad/signaturepad.dart';
 
 import '../../../src_barrel.dart';
+import 'settings/edit_ref.dart';
 
 class EntryWidget extends StatefulWidget {
   final List<TextEditingController> tecs;
@@ -45,14 +53,14 @@ class _EntryWidgetState extends State<EntryWidget> {
   Widget build(BuildContext context) {
     return Row(
       children: List.generate(widget.tecs.length, (index) {
-        if (index == 5 || index == 7) {
+        if (index == 5 || index == 8) {
           return Padding(
             padding: const EdgeInsets.only(right: 16.0, bottom: 16.0),
             child: CustomTextField(
               "",
               widget.tecs[index],
               varl: FPL.text,
-              readOnly: true,
+              readOnly: index == 5,
               onTap: index == 5
                   ? () {
                       widget.tecs[index].text =
@@ -73,7 +81,7 @@ class _EntryWidgetState extends State<EntryWidget> {
             widget.tecs[index],
             varl: FPL.number,
             isEntry: true,
-            readOnly: index == 0 || index == 3,
+            readOnly: index == 3,
             shdValidate: false,
             hasBottomPadding: false,
           ),
@@ -92,14 +100,15 @@ class EntryHeader extends StatelessWidget {
     "Difference",
     "Flowrate",
     "Adjustment",
-    "K-Factor",
+    "Old K-Factor",
+    "New K-Factor",
     "Remarks"
   ];
 
   @override
   Widget build(BuildContext context) {
     return Row(
-      children: List.generate(8, (index) {
+      children: List.generate(9, (index) {
         return Padding(
             padding: const EdgeInsets.only(right: 16.0, bottom: 16.0),
             child: SizedBox(
@@ -109,6 +118,118 @@ class EntryHeader extends StatelessWidget {
                   color: AppColors.black, fontSize: 14),
             ));
       }),
+    );
+  }
+}
+
+class SignatureView extends StatelessWidget {
+  const SignatureView(this.isCheck, {super.key});
+  final bool isCheck;
+
+  @override
+  Widget build(BuildContext context) {
+    GlobalKey<SfSignaturePadState> _signaturePadKey = GlobalKey();
+    final controller = Get.find<ToolkitController>();
+    return Column(
+      children: [
+        Container(
+          decoration: BoxDecoration(
+              border: Border.all(color: AppColors.black, width: 1)),
+          height: 84,
+          width: 480,
+          child: SfSignaturePad(
+            key: _signaturePadKey,
+            backgroundColor: AppColors.white,
+          ),
+        ),
+        Ui.boxHeight(24),
+        AppButton.row(
+          "Capture",
+          () async {
+            ui.Image image = await _signaturePadKey.currentState!.toImage();
+            var data = await image.toByteData(format: ui.ImageByteFormat.png);
+            final dd = data!.buffer.asUint8List();
+
+            if (isCheck) {
+              controller.checkSig = dd;
+            } else {
+              controller.calibSig = dd;
+            }
+            Ui.showInfo("Signature captured");
+          },
+          "Clear",
+          () {
+            _signaturePadKey.currentState!.clear();
+          },
+        )
+      ],
+    );
+  }
+}
+
+class EntryDetails extends StatelessWidget {
+  const EntryDetails({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final controller = Get.find<ToolkitController>();
+    return Row(
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            AppText.medium("Reference Details"),
+            Obx(() {
+              return AppText.thin("TYPE: ${controller.ref.type}");
+            }),
+            Obx(() {
+              return AppText.thin("MODEL: ${controller.ref.model}");
+            }),
+            Obx(() {
+              return AppText.thin("SERIAL NO: ${controller.ref.serialno}");
+            }),
+            Obx(() {
+              return AppText.thin("CAPACITY: ${controller.lane.flowrange}");
+            }),
+            Obx(() {
+              return AppText.thin("MAKE: ${controller.ref.make}");
+            }),
+            AppButton.white(() {
+              Get.to(EditRefInstrument(
+                  index: controller.allRefs.indexWhere((element) =>
+                      element.toString() == controller.ref.toString()),
+                  lm: controller.ref));
+            }, "Edit")
+          ],
+        ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            AppText.medium("Meter Details"),
+            Obx(() {
+              return AppText.thin("MAKE: ${controller.lane.make}");
+            }),
+            Obx(() {
+              return AppText.thin("MODEL: ${controller.lane.model}");
+            }),
+            Obx(() {
+              return AppText.thin("SERIAL NO: ${controller.lane.serialno}");
+            }),
+            Obx(() {
+              return AppText.thin("FLOW RANGE: ${controller.lane.flowrange}");
+            }),
+            Obx(() {
+              return AppText.thin("PRODUCT TYPE: ${controller.lane.product}");
+            }),
+            AppButton.white(() {
+              Get.to(EditLaneMeter(
+                  index: controller.allMeters.indexWhere((element) =>
+                      element.toString() == controller.lane.toString()),
+                  lm: controller.lane));
+            }, "Edit")
+          ],
+        ),
+      ],
     );
   }
 }

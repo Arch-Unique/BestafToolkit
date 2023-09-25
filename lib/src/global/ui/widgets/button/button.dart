@@ -70,6 +70,37 @@ class AppButton extends StatefulWidget {
       color: color,
     );
   }
+
+  static column(String titleA, Function? onPressedA, String titleB,
+      Function? onPressedB) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        AppButton(
+          onPressed: onPressedA,
+          text: titleA,
+        ),
+        Ui.boxHeight(16),
+        outline(onPressedB, titleB)
+      ],
+    );
+  }
+
+  static row(String titleA, Function? onPressedA, String titleB,
+      Function? onPressedB) {
+    return Row(
+      children: [
+        Expanded(
+          child: AppButton(
+            onPressed: onPressedA,
+            text: titleA,
+          ),
+        ),
+        Ui.boxWidth(24),
+        Expanded(child: white(onPressedB, titleB))
+      ],
+    );
+  }
 }
 
 class _AppButtonState extends State<AppButton> {

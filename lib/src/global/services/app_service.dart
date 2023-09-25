@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:get/get.dart';
 
+import '../../features/modes/models/lanemeter.dart';
 import '../../plugin/jwt.dart';
 import '../../src_barrel.dart';
 import '../../utils/constants/prefs/prefs.dart';
@@ -15,7 +16,282 @@ class AppService extends GetxService {
   final apiService = Get.find<DioApiService>();
   final prefService = Get.find<MyPrefService>();
 
+  static const List<List<dynamic>> allLanes = [
+    [
+      1,
+      ToolkitLocation.tincan,
+      "AGO",
+      "A1",
+      30,
+      "FMC",
+      "PRIME  4-B-1-1-0-0",
+      "1323E1 0142",
+      "280-2800",
+      1
+    ],
+    [
+      2,
+      ToolkitLocation.tincan,
+      "AGO",
+      "A2",
+      30,
+      "FMC",
+      "PRIME  4-B-1-1-0-0",
+      "1323E1 0142",
+      "280-2800",
+      1
+    ],
+    [
+      3,
+      ToolkitLocation.tincan,
+      "PMS",
+      "B1",
+      30,
+      "FMC",
+      "PRIME  4-B-1-1-0-0",
+      "P655652965",
+      "190-3400",
+      1
+    ],
+    [
+      4,
+      ToolkitLocation.tincan,
+      "PMS",
+      "B2",
+      30,
+      "FMC",
+      "PRIME  4-B-1-1-0-0",
+      "1323E1 0142",
+      "280-2800",
+      0
+    ],
+    [
+      5,
+      ToolkitLocation.tincan,
+      "PMS",
+      "C1",
+      30,
+      "FMC",
+      "PRIME  4-B-1-1-0-0",
+      "1323E1 0142",
+      "280-2800",
+      1
+    ],
+    [
+      6,
+      ToolkitLocation.tincan,
+      "PMS",
+      "C2",
+      30,
+      "FMC",
+      "PRIME  4-B-1-1-0-0",
+      "1405E10088",
+      "190-3400",
+      1
+    ],
+    [
+      7,
+      ToolkitLocation.tincan,
+      "PMS",
+      "D1",
+      30,
+      "FMC",
+      "PRIME  4-B-1-1-0-0",
+      "P655652954",
+      "190-3400",
+      1
+    ],
+    [
+      8,
+      ToolkitLocation.tincan,
+      "PMS",
+      "D2",
+      30,
+      "FMC",
+      "PRIME  4-B-1-1-0-0",
+      "P655654715",
+      "190-3400",
+      1
+    ],
+    [
+      9,
+      ToolkitLocation.tincan,
+      "PMS",
+      "E1",
+      30,
+      "FMC",
+      "PRIME  4-B-1-1-0-0",
+      "P655652535",
+      "190-3400",
+      1
+    ],
+    [
+      10,
+      ToolkitLocation.tincan,
+      "PMS",
+      "E2",
+      30,
+      "FMC",
+      "PRIME  4-B-1-1-0-0",
+      "1323E1 0142",
+      "280-2800",
+      1
+    ],
+    [
+      11,
+      ToolkitLocation.tincan,
+      "PMS",
+      "F1",
+      30,
+      "FMC",
+      "PRIME  4-B-1-1-0-0",
+      "1323E1 0142",
+      "280-2800",
+      1
+    ],
+    [
+      12,
+      ToolkitLocation.tincan,
+      "PMS",
+      "F2",
+      30,
+      "FMC",
+      "PRIME  4-B-1-1-0-0",
+      "P655654718",
+      "190-3400",
+      1
+    ],
+    [
+      13,
+      ToolkitLocation.tincan,
+      "SN150",
+      "G1",
+      30,
+      "FMC",
+      "PRIME  4-B-1-1-0-0",
+      "1323E1 0142",
+      "280-2800",
+      0
+    ],
+    [
+      14,
+      ToolkitLocation.tincan,
+      "SN500",
+      "G2",
+      30,
+      "FMC",
+      "PRIME  4-B-1-1-0-0",
+      "1323E1 0142",
+      "280-2800",
+      0
+    ],
+    [
+      15,
+      ToolkitLocation.tincan,
+      "ATK",
+      "H1",
+      30,
+      "FMC",
+      "PRIME  4-B-1-1-0-0",
+      "1405E10088",
+      "190-3400",
+      1
+    ],
+    [
+      16,
+      ToolkitLocation.apapa,
+      "PMS",
+      "A1",
+      30,
+      "FMC",
+      "PRIME  4-B-1-1-0-0",
+      "1323E1 0142",
+      "280-2800",
+      1
+    ],
+    [
+      17,
+      ToolkitLocation.apapa,
+      "PMS",
+      "A2",
+      30,
+      "FMC",
+      "PRIME  4-B-1-1-0-0",
+      "1323E1 0142",
+      "280-2800",
+      1
+    ],
+    [
+      18,
+      ToolkitLocation.apapa,
+      "PMS",
+      "B1",
+      30,
+      "FMC",
+      "PRIME  4-B-1-1-0-0",
+      "1323E1 0142",
+      "280-2800",
+      1
+    ],
+    [
+      19,
+      ToolkitLocation.apapa,
+      "PMS",
+      "B2",
+      30,
+      "FMC",
+      "PRIME  4-B-1-1-0-0",
+      "1323E1 0142",
+      "280-2800",
+      1
+    ],
+    [
+      20,
+      ToolkitLocation.apapa,
+      "PMS",
+      "C1",
+      30,
+      "FMC",
+      "PRIME  4-B-1-1-0-0",
+      "1323E1 0142",
+      "280-2800",
+      1
+    ],
+    [
+      21,
+      ToolkitLocation.apapa,
+      "PMS",
+      "C2",
+      30,
+      "FMC",
+      "PRIME  4-B-1-1-0-0",
+      "1323E1 0142",
+      "280-2800",
+      1
+    ]
+  ];
+
+  static const List<List<dynamic>> allRefInstruments = [
+    [
+      ToolkitLocation.tincan,
+      "SERAPHIN",
+      "SERIES J",
+      "16-58519-01",
+      "OPEN PROVER TANK",
+      "5000"
+    ],
+    [
+      ToolkitLocation.apapa,
+      "SERAPHIN",
+      "SERIES J",
+      "16-58519-01",
+      "OPEN PROVER TANK",
+      "5000"
+    ]
+  ];
+
   initUserConfig() async {
+    await _initLaneMeters();
     await _hasOpened();
     await _setLoginStatus();
     if (isLoggedIn.value) {
@@ -92,5 +368,98 @@ class AppService extends GetxService {
         await _refreshToken();
       }
     });
+  }
+
+  //LANEMETER
+  _initLaneMeters() async {
+    if (hasOpenedOnboarding.value == true) {
+      return;
+    }
+    print("start initing lanes");
+
+    for (var i = 0; i < allLanes.length; i++) {
+      await addLaneMeter(LaneMeter(
+        enabled: allLanes[i][9],
+        location: allLanes[i][1],
+        product: allLanes[i][2],
+        lane: allLanes[i][3],
+        make: allLanes[i][5],
+        checks: allLanes[i][4],
+        model: allLanes[i][6],
+        serialno: allLanes[i][7],
+        flowrange: allLanes[i][8],
+      ));
+    }
+    print("done initing lanes");
+  }
+
+  List<LaneMeter> getLaneMeters() {
+    List<dynamic>? allLaneMeters = prefService.get(MyPrefs.mpLanemeters);
+    return allLaneMeters!.map((e) => LaneMeter.fromString(e)).toList();
+  }
+
+  addLaneMeter(LaneMeter a) async {
+    List<dynamic>? allLaneMeters = prefService.get(MyPrefs.mpLanemeters) ?? [];
+
+    allLaneMeters.add(a.toSaveAsString());
+    await prefService.save(MyPrefs.mpLanemeters, allLaneMeters);
+  }
+
+  removeLaneMeter(int a) async {
+    List<dynamic>? allLaneMeters = prefService.get(MyPrefs.mpLanemeters) ?? [];
+
+    allLaneMeters.removeAt(a);
+    await prefService.save(MyPrefs.mpLanemeters, allLaneMeters);
+  }
+
+  editLaneMeter(int b, LaneMeter a) async {
+    List<dynamic>? allLaneMeters = prefService.get(MyPrefs.mpLanemeters) ?? [];
+
+    allLaneMeters[b] = a.toSaveAsString();
+    await prefService.save(MyPrefs.mpLanemeters, allLaneMeters);
+  }
+
+  //LANEMETER
+  _initRefInstrument() async {
+    if (hasOpenedOnboarding.value == true) {
+      return;
+    }
+
+    for (var i = 0; i < allLanes.length; i++) {
+      await addRefInstrument(RefInstrument(
+        location: allLanes[i][0],
+        capacity: allLanes[i][5],
+        make: allLanes[i][1],
+        model: allLanes[i][2],
+        serialno: allLanes[i][3],
+        type: allLanes[i][4],
+      ));
+    }
+  }
+
+  List<RefInstrument> getRefInstruments() {
+    List<dynamic>? allRefs = prefService.get(MyPrefs.mpRefInstruments);
+    return allRefs!.map((e) => RefInstrument.fromString(e)).toList();
+  }
+
+  addRefInstrument(RefInstrument a) async {
+    List<dynamic>? allRefs = prefService.get(MyPrefs.mpRefInstruments) ?? [];
+
+    allRefs.add(a.toSaveAsString());
+    await prefService.save(MyPrefs.mpRefInstruments, allRefs);
+  }
+
+  removeRefInstrument(int a) async {
+    List<dynamic>? allRefs = prefService.get(MyPrefs.mpRefInstruments) ?? [];
+
+    allRefs.removeAt(a);
+    await prefService.save(MyPrefs.mpRefInstruments, allRefs);
+  }
+
+  editRefInstrument(int b, RefInstrument a) async {
+    List<dynamic>? allRefs = prefService.get(MyPrefs.mpRefInstruments) ?? [];
+
+    allRefs[b] = a.toSaveAsString();
+    await prefService.save(MyPrefs.mpRefInstruments, allRefs);
   }
 }

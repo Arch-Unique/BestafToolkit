@@ -18,6 +18,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     const InternalCheckPage(),
     const ExternalCalibPage(),
     const KFactorCalculatorPage(),
+    const SettingsPage(),
   ];
 
   @override

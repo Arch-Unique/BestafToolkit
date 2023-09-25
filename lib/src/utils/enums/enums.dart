@@ -63,19 +63,28 @@ enum ErrorTypes {
 enum ToolkitModes {
   internalCheck("Internal Check"),
   externalCalibration("External Calibration"),
-  kFactorCalculation("K-Factor Calculation");
+  kFactorCalculation("K-Factor Calculation"),
+  settings("Settings");
 
   final String title;
   const ToolkitModes(this.title);
 }
 
+enum SettingsModes {
+  lanemeter("Lane Meters", "Create, edit and delete lanemeters"),
+  reference(
+      "Reference Instrument", "Create,edit and delete reference instruments");
+
+  final String title, description;
+  const SettingsModes(this.title, this.description);
+}
+
 enum ToolkitLocation {
   tincan("TINCAN", 15, "SERAPHIN", "SERIES J", "16-58519-01",
-      "OPEN PROVER TANK", "5000", -4.0),
+      "OPEN PROVER TANK", "5000"),
   apapa("FOT APAPA", 6, "SERAPHIN", "SERIES J", "16-58519-01",
-      "OPEN PROVER TANK", "5000", -2.0);
+      "OPEN PROVER TANK", "5000");
 
-  final double factor;
   final String title,
       proverMake,
       proverModel,
@@ -84,12 +93,12 @@ enum ToolkitLocation {
       proverCapacity;
   final int loadingArms;
   const ToolkitLocation(
-      this.title,
-      this.loadingArms,
-      this.proverMake,
-      this.proverModel,
-      this.proverSerialno,
-      this.proverType,
-      this.proverCapacity,
-      this.factor);
+    this.title,
+    this.loadingArms,
+    this.proverMake,
+    this.proverModel,
+    this.proverSerialno,
+    this.proverType,
+    this.proverCapacity,
+  );
 }

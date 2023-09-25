@@ -12,6 +12,9 @@ class MyPrefs {
   static const String mpLogin3rdParty = "mpLogin3rdParty";
   static const String mpDynamicOn = "mpDynamicOn";
 
+  static const String mpLanemeters = "mplanemeters";
+  static const String mpRefInstruments = "mpRefInstruments";
+
   // static void listenToStorageChanges(String k, void Function(dynamic) v) {
   //   _prefs.listenKey(k, (j) {
   //     final jwt = readData(mpUserJWT);

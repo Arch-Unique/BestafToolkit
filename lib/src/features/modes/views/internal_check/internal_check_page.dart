@@ -1,4 +1,5 @@
 import 'package:bestaf_toolkit/src/features/modes/controllers/toolkit_controller.dart';
+import 'package:bestaf_toolkit/src/features/modes/views/settings/edit_lanemeter_page.dart';
 import 'package:bestaf_toolkit/src/features/modes/views/util_widgets.dart';
 import 'package:bestaf_toolkit/src/global/ui/widgets/fields/custom_textfield.dart';
 import 'package:bestaf_toolkit/src/global/ui/widgets/others/containers.dart';
@@ -17,7 +18,7 @@ class InternalCheckPage extends StatefulWidget {
 
 class _InternalCheckPageState extends State<InternalCheckPage> {
   final controller = Get.find<ToolkitController>();
-  List<TextEditingController> alltecs = List.generate(8, (index) {
+  List<TextEditingController> alltecs = List.generate(9, (index) {
     return TextEditingController();
   });
   TextEditingController calibByTec = TextEditingController();
@@ -33,7 +34,7 @@ class _InternalCheckPageState extends State<InternalCheckPage> {
 
     controller.lane = controller.allMetersMap.entries.first.value;
     controller.location = controller.lane.location;
-    allEntryWidgets.add(EntryWidget(alltecs.sublist(0, 8)));
+    allEntryWidgets.add(EntryWidget(alltecs.sublist(0, 9)));
     super.initState();
   }
 
@@ -56,6 +57,16 @@ class _InternalCheckPageState extends State<InternalCheckPage> {
                 },
                 initOption: controller.lane.toString(),
               ),
+              CustomTextField.dropdown(
+                controller.allRefsMap.keys.toList(),
+                TextEditingController(),
+                "Select Reference Instrument",
+                onChanged: (p0) {
+                  controller.ref = controller.allRefsMap[p0]!;
+                },
+                initOption: controller.ref.toString(),
+              ),
+              EntryDetails(),
               AppDivider(),
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
@@ -71,7 +82,7 @@ class _InternalCheckPageState extends State<InternalCheckPage> {
                 children: [
                   IconButton(
                       onPressed: () {
-                        if (allEntryWidgets.length < 12) {
+                        if (allEntryWidgets.length < 11) {
                           addNewEntries();
                         }
                       },
@@ -87,23 +98,37 @@ class _InternalCheckPageState extends State<InternalCheckPage> {
                 ],
               ),
               AppDivider(),
-              CustomTextField("Calibrated By", calibByTec),
               CustomTextField("Checked By", checkByTec),
+              SignatureView(true),
               AppDivider(),
-              AppButton(
-                onPressed: () async {
-                  entries.clear();
-                  int len = alltecs.length ~/ 8;
+              CustomTextField("Calibrated By", calibByTec),
+              SignatureView(false),
+              AppDivider(),
+              AppButton.row(
+                  "Share",
+                  () async {
+                    entries.clear();
+                    int len = alltecs.length ~/ 9;
 
-                  for (var i = 0; i < len; i++) {
-                    entries.add(
-                        convertTecsToText(alltecs.sublist(i * 8, (i + 1) * 8)));
-                  }
-                  await controller.saveToolkitSheet(
-                      checkByTec.text, calibByTec.text, entries);
-                },
-                text: "Save",
-              )
+                    for (var i = 0; i < len; i++) {
+                      entries.add(convertTecsToText(
+                          alltecs.sublist(i * 9, (i + 1) * 9)));
+                    }
+                    await controller.shareToolkitSheet(
+                        checkByTec.text, calibByTec.text, entries);
+                  },
+                  "Print",
+                  () async {
+                    entries.clear();
+                    int len = alltecs.length ~/ 9;
+
+                    for (var i = 0; i < len; i++) {
+                      entries.add(convertTecsToText(
+                          alltecs.sublist(i * 9, (i + 1) * 9)));
+                    }
+                    await controller.printToolkitSheet(
+                        checkByTec.text, calibByTec.text, entries);
+                  })
             ],
           ),
         ),
@@ -112,7 +137,7 @@ class _InternalCheckPageState extends State<InternalCheckPage> {
   }
 
   addNewEntries() {
-    final ntecs = List.generate(8, (index) {
+    final ntecs = List.generate(9, (index) {
       return TextEditingController();
     });
     alltecs.addAll(ntecs);
@@ -122,7 +147,7 @@ class _InternalCheckPageState extends State<InternalCheckPage> {
   }
 
   removeLastEntries() {
-    alltecs.removeRange(alltecs.length - 8, alltecs.length);
+    alltecs.removeRange(alltecs.length - 9, alltecs.length);
     setState(() {
       allEntryWidgets.removeLast();
     });
