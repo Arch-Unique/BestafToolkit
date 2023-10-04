@@ -1,3 +1,5 @@
+import 'package:bestaf_toolkit/src/features/modes/views/demo_check_page.dart';
+import 'package:bestaf_toolkit/src/features/modes/views/util_widgets.dart';
 import 'package:bestaf_toolkit/src/global/ui/ui_barrel.dart';
 import 'package:bestaf_toolkit/src/global/ui/widgets/others/containers.dart';
 import 'package:bestaf_toolkit/src/src_barrel.dart';
@@ -15,30 +17,26 @@ class OnboardingScreen extends StatefulWidget {
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
   final screens = [
-    const InternalCheckPage(),
-    const ExternalCalibPage(),
+    const DemoCheckPage(ToolkitModes.internalCheck),
+    const DemoCheckPage(ToolkitModes.externalCalibration),
     const KFactorCalculatorPage(),
     const SettingsPage(),
   ];
 
   @override
-  void initState() {
-    // TODO: implement initState
-    print("in init");
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    print(Ui.width(context));
     return Scaffold(
-      appBar: backAppBar(hasBack: false, title: "Choose What To Do"),
+      appBar: backAppBar(hasBack: false, title: "Bestaf ToolKit", center: true),
       body: Ui.padding(
         child: SingleChildScrollView(
-          child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(
-                  ToolkitModes.values.length, (index) => menuItem(index))),
+          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+            Image.asset(Assets.logo, height: 120),
+            Ui.boxHeight(24),
+            UtilDateTime(),
+            Ui.boxHeight(24),
+            ...List.generate(
+                ToolkitModes.values.length, (index) => menuItem(index))
+          ]),
         ),
       ),
     );

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
@@ -8,6 +9,7 @@ import 'package:bestaf_toolkit/src/global/ui/ui_barrel.dart';
 import 'package:bestaf_toolkit/src/global/ui/widgets/fields/custom_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_signaturepad/signaturepad.dart';
 
 import '../../../src_barrel.dart';
@@ -216,7 +218,7 @@ class EntryDetails extends StatelessWidget {
                   return AppText.thin("SERIAL NO: ${controller.ref.serialno}");
                 }),
                 Obx(() {
-                  return AppText.thin("CAPACITY: ${controller.lane.flowrange}");
+                  return AppText.thin("CAPACITY: ${controller.ref.capacity}");
                 }),
                 Obx(() {
                   return AppText.thin("MAKE: ${controller.ref.make}");
@@ -226,6 +228,9 @@ class EntryDetails extends StatelessWidget {
                       index: controller.allRefs.indexWhere((element) =>
                           element.toString() == controller.ref.toString()),
                       lm: controller.ref));
+                  controller.ref = controller.allRefs[controller.allRefs
+                      .indexWhere((element) =>
+                          element.toString() == controller.ref.toString())];
                 }, "Edit")
               ],
             ),
@@ -254,15 +259,65 @@ class EntryDetails extends StatelessWidget {
                   return AppText.thin(
                       "PRODUCT TYPE: ${controller.lane.product}");
                 }),
-                AppButton.white(() {
+                AppButton.white(() async {
                   Get.to(EditLaneMeter(
                       index: controller.allMeters.indexWhere((element) =>
                           element.toString() == controller.lane.toString()),
                       lm: controller.lane));
+                  controller.lane = controller.allMeters[controller.allMeters
+                      .indexWhere((element) =>
+                          element.toString() == controller.lane.toString())];
                 }, "Edit")
               ],
             ),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+class UtilDateTime extends StatefulWidget {
+  const UtilDateTime({super.key});
+
+  @override
+  State<UtilDateTime> createState() => _UtilDateTimeState();
+}
+
+class _UtilDateTimeState extends State<UtilDateTime> {
+  RxString dtText =
+      DateFormat("dd/MM/yyyy hh:mm:ss").format(DateTime.now()).obs;
+
+  @override
+  void initState() {
+    Timer.periodic(Duration(seconds: 1), (timer) {
+      dtText.value = DateFormat("dd/MM/yyyy hh:mm:ss").format(DateTime.now());
+    });
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(() {
+      return AppText.medium(dtText.value, color: AppColors.black, fontSize: 14);
+    });
+  }
+}
+
+class LoadingOverlay extends StatelessWidget {
+  const LoadingOverlay({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          CircularProgressIndicator(),
+          SizedBox(height: 16),
+          AppText.bold('Please Wait ...', color: AppColors.white),
         ],
       ),
     );

@@ -8,7 +8,7 @@
 PRODUCT_NAME = bestaf_toolkit
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = com.example.bestafToolkit
+PRODUCT_BUNDLE_IDENTIFIER = com.mrsholdings.bestaf_toolkit
 
 // The copyright displayed in application information
 PRODUCT_COPYRIGHT = Copyright © 2023 com.example. All rights reserved.

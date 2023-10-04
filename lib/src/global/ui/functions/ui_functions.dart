@@ -52,7 +52,7 @@ abstract class Ui {
         width: 1,
       );
 
-  static showInfo(String message) {
+  static showInfo(String message, {int duration = 3}) {
     Get.closeAllSnackbars();
     Get.showSnackbar(GetSnackBar(
       messageText: AppText.thin(message,
@@ -72,7 +72,7 @@ abstract class Ui {
         height: 24,
       ),
       animationDuration: const Duration(milliseconds: 1500),
-      duration: const Duration(seconds: 3),
+      duration: Duration(seconds: duration),
       padding: const EdgeInsets.all(24),
       isDismissible: true,
       margin: const EdgeInsets.only(left: 24, right: 24, bottom: 24),

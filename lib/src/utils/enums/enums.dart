@@ -73,32 +73,17 @@ enum ToolkitModes {
 enum SettingsModes {
   lanemeter("Lane Meters", "Create, edit and delete lanemeters"),
   reference(
-      "Reference Instrument", "Create,edit and delete reference instruments");
+      "Reference Instrument", "Create,edit and delete reference instruments"),
+  history("History", "View history of all your toolkit sheets");
 
   final String title, description;
   const SettingsModes(this.title, this.description);
 }
 
 enum ToolkitLocation {
-  tincan("TINCAN", 15, "SERAPHIN", "SERIES J", "16-58519-01",
-      "OPEN PROVER TANK", "5000"),
-  apapa("FOT APAPA", 6, "SERAPHIN", "SERIES J", "16-58519-01",
-      "OPEN PROVER TANK", "5000");
+  tincan("TINCAN"),
+  apapa("FOT APAPA");
 
-  final String title,
-      proverMake,
-      proverModel,
-      proverSerialno,
-      proverType,
-      proverCapacity;
-  final int loadingArms;
-  const ToolkitLocation(
-    this.title,
-    this.loadingArms,
-    this.proverMake,
-    this.proverModel,
-    this.proverSerialno,
-    this.proverType,
-    this.proverCapacity,
-  );
+  final String title;
+  const ToolkitLocation(this.title);
 }

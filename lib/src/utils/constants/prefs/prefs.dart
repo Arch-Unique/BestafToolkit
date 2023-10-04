@@ -14,6 +14,8 @@ class MyPrefs {
 
   static const String mpLanemeters = "mplanemeters";
   static const String mpRefInstruments = "mpRefInstruments";
+  static const String mpIncompleteIT = "mpIncompleteIT";
+  static const String mpIncompleteET = "mpIncompleteET";
 
   // static void listenToStorageChanges(String k, void Function(dynamic) v) {
   //   _prefs.listenKey(k, (j) {

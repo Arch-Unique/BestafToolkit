@@ -1,3 +1,4 @@
+import 'package:bestaf_toolkit/src/features/modes/views/settings/history.dart';
 import 'package:bestaf_toolkit/src/features/modes/views/settings/lane_meters_page.dart';
 import 'package:bestaf_toolkit/src/features/modes/views/settings/ref.dart';
 import 'package:bestaf_toolkit/src/global/ui/ui_barrel.dart';
@@ -14,10 +15,7 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  final screens = [
-    LaneMeterspage(),
-    RefInstrumentsPage(),
-  ];
+  final screens = [LaneMeterspage(), RefInstrumentsPage(), HistoryPage()];
   @override
   Widget build(BuildContext context) {
     return SinglePageScaffold(

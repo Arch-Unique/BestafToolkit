@@ -7,6 +7,7 @@ AppBar backAppBar(
     {String? title,
     Widget? titleWidget,
     Color color = AppColors.textColor,
+    bool center = false,
     bool hasBack = true,
     List<Widget>? trailing}) {
   return AppBar(
@@ -17,6 +18,7 @@ AppBar backAppBar(
           : AppText.medium(title, fontSize: 24, color: color),
       elevation: 0,
       actions: trailing ?? [],
+      centerTitle: center,
       leadingWidth: hasBack ? 56 : 28,
       leading: hasBack
           ? Builder(builder: (context) {

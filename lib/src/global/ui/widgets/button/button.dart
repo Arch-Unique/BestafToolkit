@@ -101,6 +101,24 @@ class AppButton extends StatefulWidget {
       ],
     );
   }
+
+  static rows(String titleA, Function? onPressedA, String titleB,
+      Function? onPressedB, String titleC, Function? onPressedC) {
+    return Row(
+      children: [
+        Expanded(
+          child: AppButton(
+            onPressed: onPressedA,
+            text: titleA,
+          ),
+        ),
+        Ui.boxWidth(24),
+        Expanded(child: white(onPressedB, titleB)),
+        Ui.boxWidth(24),
+        Expanded(child: white(onPressedC, titleC))
+      ],
+    );
+  }
 }
 
 class _AppButtonState extends State<AppButton> {
