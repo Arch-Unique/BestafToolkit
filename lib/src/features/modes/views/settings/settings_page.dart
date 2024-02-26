@@ -1,3 +1,4 @@
+import 'package:bestaf_toolkit/src/features/modes/controllers/toolkit_controller.dart';
 import 'package:bestaf_toolkit/src/features/modes/views/settings/history.dart';
 import 'package:bestaf_toolkit/src/features/modes/views/settings/lane_meters_page.dart';
 import 'package:bestaf_toolkit/src/features/modes/views/settings/ref.dart';
@@ -27,8 +28,12 @@ class _SettingsPageState extends State<SettingsPage> {
               subtitle: AppText.thin(SettingsModes.values[i].description,
                   color: AppColors.lightTextColor),
               onTap: () {
-                Get.to(screens[i]);
+                if (i == 3) {
+                } else {
+                  Get.to(screens[i]);
+                }
               },
+              trailing: i == 3 ? changeUOM() : null,
             );
           },
           separatorBuilder: (_, i) {
@@ -36,5 +41,17 @@ class _SettingsPageState extends State<SettingsPage> {
           },
           itemCount: SettingsModes.values.length),
     );
+  }
+
+  Widget changeUOM() {
+    final controller = Get.find<ToolkitController>();
+    return GestureDetector(
+        onTap: () async {
+          await controller.editUOM(!controller.getUOM());
+          setState(() {});
+          Ui.showInfo(
+              "UOM successfully changed to ${controller.getUOM() ? "Litre" : "Mass"}");
+        },
+        child: AppText.bold(controller.getUOM() ? "Litre" : "Mass"));
   }
 }

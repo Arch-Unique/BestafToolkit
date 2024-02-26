@@ -163,8 +163,11 @@ class ToolkitController extends GetxController {
     await _initSheet();
   }
 
-  _initSheet() async {
-    ByteData data = await rootBundle.load('assets/json/toolkitsheet.docx');
+  _initSheet([bool isLitre = true]) async {
+    String sd = isLitre
+        ? 'assets/json/toolkitsheet.docx'
+        : 'assets/json/toolkitsheetm.docx';
+    ByteData data = await rootBundle.load(sd);
     var bytes = data.buffer.asUint8List();
     doc = await DocxTemplate.fromBytes(bytes);
   }
@@ -535,6 +538,15 @@ class ToolkitController extends GetxController {
     _allRefs.value = allRefs.map((e) => RefInstrument.fromString(e)).toList();
 
     await appService.prefService.save(MyPrefs.mpRefInstruments, allRefs);
+  }
+
+  editUOM(bool b) async {
+    await appService.prefService.save(MyPrefs.mpIsLitre, b);
+    await _initSheet(b);
+  }
+
+  bool getUOM() {
+    return appService.prefService.get<bool>(MyPrefs.mpIsLitre) ?? true;
   }
 
   static double calcKFactor(double batchVol, double oldKFactor, double ddiff,

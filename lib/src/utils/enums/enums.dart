@@ -74,7 +74,9 @@ enum SettingsModes {
   lanemeter("Lane Meters", "Create, edit and delete lanemeters"),
   reference(
       "Reference Instrument", "Create,edit and delete reference instruments"),
-  history("History", "View history of all your toolkit sheets");
+  history("History", "View history of all your toolkit sheets"),
+  edituom("Unit Of Measurement",
+      "Change unit of measurement (default(true): Litre)");
 
   final String title, description;
   const SettingsModes(this.title, this.description);
