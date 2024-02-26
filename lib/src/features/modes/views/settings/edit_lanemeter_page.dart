@@ -33,6 +33,7 @@ class _EditLaneMeterState extends State<EditLaneMeter> {
       tecs[4].text = widget.lm!.product;
       tecs[5].text = widget.lm!.checks.toString();
       tecs[6].text = widget.lm!.location.title;
+      tecs[7].text = widget.lm!.lane;
     }
     super.initState();
   }
@@ -46,6 +47,7 @@ class _EditLaneMeterState extends State<EditLaneMeter> {
         child: Ui.padding(
           child: Column(
             children: [
+              CustomTextField("Lane/Leg", tecs[7]),
               CustomTextField("Make", tecs[0]),
               CustomTextField("Model", tecs[1]),
               CustomTextField("Serial No", tecs[2]),
@@ -70,7 +72,8 @@ class _EditLaneMeterState extends State<EditLaneMeter> {
                       tecs[3].text.isEmpty ||
                       tecs[4].text.isEmpty ||
                       tecs[5].text.isEmpty ||
-                      tecs[6].text.isEmpty) {
+                      tecs[6].text.isEmpty ||
+                      tecs[7].text.isEmpty) {
                     Ui.showError("Fields cannot be empty");
                     return;
                   }
@@ -84,6 +87,7 @@ class _EditLaneMeterState extends State<EditLaneMeter> {
                       serialno: tecs[2].text,
                       flowrange: tecs[3].text,
                       product: tecs[4].text,
+                      lane: tecs[7].text,
                       checks: int.parse(tecs[5].text),
                     ));
                   } else {
@@ -97,6 +101,7 @@ class _EditLaneMeterState extends State<EditLaneMeter> {
                           serialno: tecs[2].text,
                           flowrange: tecs[3].text,
                           product: tecs[4].text,
+                          lane: tecs[7].text,
                           checks: int.parse(tecs[5].text),
                         ));
                   }
