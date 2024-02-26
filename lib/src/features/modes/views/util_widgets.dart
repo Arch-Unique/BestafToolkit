@@ -32,8 +32,9 @@ class _EntryWidgetState extends State<EntryWidget> {
     widget.tecs[1].addListener(() {
       if (widget.tecs[1].text.isNotEmpty && widget.tecs[2].text.isNotEmpty) {
         setState(() {
-          final diff = double.parse(widget.tecs[2].value.text) -
-              double.parse(widget.tecs[1].value.text);
+          final diff = (double.parse(widget.tecs[2].value.text) -
+                  double.parse(widget.tecs[1].value.text))
+              .toPrecision(2);
 
           widget.tecs[3].text = diff.toString();
         });
@@ -42,8 +43,9 @@ class _EntryWidgetState extends State<EntryWidget> {
     widget.tecs[2].addListener(() {
       if (widget.tecs[1].text.isNotEmpty && widget.tecs[2].text.isNotEmpty) {
         setState(() {
-          final diff = double.parse(widget.tecs[2].value.text) -
-              double.parse(widget.tecs[1].value.text);
+          final diff = (double.parse(widget.tecs[2].value.text) -
+                  double.parse(widget.tecs[1].value.text))
+              .toPrecision(2);
 
           widget.tecs[3].text = diff.toString();
         });

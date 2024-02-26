@@ -151,15 +151,6 @@ class ToolkitController extends GetxController {
 
   initWorkSheet() async {
     _initLanes();
-    // try {
-    //   ByteData data = await rootBundle.load('assets/json/toolkitsheet.xlsx');
-    //   var bytes =
-    //       data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
-    //   excel = Excel.decodeBytes(bytes);
-    // } on Exception catch (e) {
-    //   // TODO
-    //   print(e);
-    // }
     await _initSheet();
   }
 
@@ -353,7 +344,8 @@ class ToolkitController extends GetxController {
   }
 
   Future<File> _saveDocx(Content c) async {
-    await _initSheet();
+    await _initSheet(
+        appService.prefService.get<bool>(MyPrefs.mpIsLitre) ?? true);
     var fileBytes = await doc.generate(c);
     var directory = await getTemporaryDirectory();
     var nameOfFile =
@@ -542,7 +534,6 @@ class ToolkitController extends GetxController {
 
   editUOM(bool b) async {
     await appService.prefService.save(MyPrefs.mpIsLitre, b);
-    await _initSheet(b);
   }
 
   bool getUOM() {
