@@ -9,7 +9,6 @@ class ToolkitSheet {
   LaneMeter laneMeter;
   ToolkitLocation location;
   RefInstrument ref;
-  int checks;
   String nextdate, date, internalCheck, externalCalib, calibBy, checkBy;
   Uint8List? calibSig, checkSig;
   List<List<dynamic>> entry;
@@ -20,7 +19,6 @@ class ToolkitSheet {
     required this.entry,
     required this.location,
     required this.ref,
-    this.checks = 30,
     required this.nextdate,
     required this.date,
     this.internalCheck = "",

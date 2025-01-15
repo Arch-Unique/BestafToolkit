@@ -178,8 +178,9 @@ class ToolkitController extends GetxController {
       String checkBy, String calibBy, List<List<dynamic>> entries) async {
     _toolkitSheet.value.date +=
         " - ${DateFormat("dd/MM/yyyy hh:mm").format(DateTime.now())}";
-    _toolkitSheet.value.nextdate = DateFormat("dd/MM/yyyy")
-        .format(DateTime.now().add(Duration(days: _toolkitSheet.value.checks)));
+    _toolkitSheet.value.nextdate = DateFormat("dd/MM/yyyy").format(
+        DateTime.now()
+            .add(Duration(days: _toolkitSheet.value.laneMeter.checks)));
     _toolkitSheet.value.calibBy = calibBy;
     _toolkitSheet.value.checkBy = checkBy;
     _toolkitSheet.value.entry = entries;
@@ -193,8 +194,9 @@ class ToolkitController extends GetxController {
       String checkBy, String calibBy, List<List<dynamic>> entries) async {
     _toolkitSheet.value.date +=
         " - ${DateFormat("dd/MM/yyyy hh:mm").format(DateTime.now())}";
-    _toolkitSheet.value.nextdate = DateFormat("dd/MM/yyyy")
-        .format(DateTime.now().add(Duration(days: _toolkitSheet.value.checks)));
+    _toolkitSheet.value.nextdate = DateFormat("dd/MM/yyyy").format(
+        DateTime.now()
+            .add(Duration(days: _toolkitSheet.value.laneMeter.checks)));
     _toolkitSheet.value.calibBy = calibBy;
     _toolkitSheet.value.checkBy = checkBy;
     _toolkitSheet.value.entry = entries;
@@ -207,8 +209,9 @@ class ToolkitController extends GetxController {
       String checkBy, String calibBy, List<List<dynamic>> entries) async {
     _toolkitSheet.value.date +=
         " - ${DateFormat("dd/MM/yyyy hh:mm").format(DateTime.now())}";
-    _toolkitSheet.value.nextdate = DateFormat("dd/MM/yyyy")
-        .format(DateTime.now().add(Duration(days: _toolkitSheet.value.checks)));
+    _toolkitSheet.value.nextdate = DateFormat("dd/MM/yyyy").format(
+        DateTime.now()
+            .add(Duration(days: _toolkitSheet.value.laneMeter.checks)));
     _toolkitSheet.value.calibBy = calibBy;
     _toolkitSheet.value.checkBy = checkBy;
     _toolkitSheet.value.entry = entries;
@@ -295,7 +298,7 @@ class ToolkitController extends GetxController {
       ..add(TextContent(meterKey, _toolkitSheet.value.laneMeter.lane))
       ..add(TextContent(productKey, _toolkitSheet.value.laneMeter.product))
       ..add(TextContent(laneKey, _toolkitSheet.value.laneMeter.lane))
-      ..add(TextContent(checksKey, _toolkitSheet.value.checks))
+      ..add(TextContent(checksKey, _toolkitSheet.value.laneMeter.checks))
       ..add(TextContent(internalCheckKey, _toolkitSheet.value.internalCheck))
       ..add(TextContent(externalCalibKey, _toolkitSheet.value.externalCalib))
       ..add(TextContent(nextdateKey, _toolkitSheet.value.nextdate))
@@ -432,6 +435,107 @@ class ToolkitController extends GetxController {
       print('Error: $e');
     }
     return f.readAsBytes();
+  }
+
+  Future<void> uploadSheetToLocal(String lane, String location, File f,
+      {bool isExternal = false}) async {
+    try {
+      String url =
+          'http://192.168.4.176:8000/upload/${isExternal ? "external_check" : "internal_check"}';
+
+      final formData = dio.FormData.fromMap({
+        'file': await dio.MultipartFile.fromFile(f.path),
+        'lane': lane,
+        'location': location,
+      });
+
+      final response = await dio.Dio().post(
+        url,
+        data: formData,
+        options: dio.Options(
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        Ui.showInfo("File saved successfully");
+      } else {
+        Ui.showError("File not saved, please try again later");
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
+  Future<void> uploadCertificate(
+      String lane, String location, File f, double kfactor) async {
+    try {
+      String url =
+          'http://192.168.4.176:8000/upload/external_calibration_certificate';
+
+      final formData = dio.FormData.fromMap({
+        'file': await dio.MultipartFile.fromFile(f.path),
+        'lane': lane,
+        'kfactor': kfactor,
+        'location': location,
+      });
+
+      final response = await dio.Dio().post(
+        url,
+        data: formData,
+        options: dio.Options(
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        Ui.showInfo("File saved successfully");
+      } else {
+        Ui.showError("File not saved, please try again later");
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
+  Future<void> uploadPOforLanes(
+      List<String> lanes, String location, File f) async {
+    try {
+      String url = 'http://192.168.4.176:8000/upload/external_purchase_order';
+      Map<String, dynamic> cForms = new Map();
+
+      for (var element in lanes) {
+        final ent = <String, dynamic>{"lanes[]": element};
+        cForms.addEntries(ent.entries);
+      }
+      cForms.addEntries(
+          {'file': await dio.MultipartFile.fromFile(f.path)}.entries);
+      cForms.addEntries({'location': location}.entries);
+
+      final formData = dio.FormData.fromMap(cForms, dio.ListFormat.multiCompatible);
+
+      final response = await dio.Dio().post(
+        url,
+        data: formData,
+        options: dio.Options(
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        Ui.showInfo("File saved successfully");
+      } else {
+        Ui.showError("File not saved, please try again later");
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
   }
 
   _printWorkSheet(File f) async {

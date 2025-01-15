@@ -1,4 +1,5 @@
 import 'package:bestaf_toolkit/src/features/modes/views/demo_check_page.dart';
+import 'package:bestaf_toolkit/src/features/modes/views/upload_file_page.dart';
 import 'package:bestaf_toolkit/src/features/modes/views/util_widgets.dart';
 import 'package:bestaf_toolkit/src/global/ui/ui_barrel.dart';
 import 'package:bestaf_toolkit/src/global/ui/widgets/others/containers.dart';
@@ -17,8 +18,12 @@ class OnboardingScreen extends StatefulWidget {
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
   final screens = [
+    const UploadFilePage(0),
     const DemoCheckPage(ToolkitModes.internalCheck),
+    const UploadFilePage(1),
     const DemoCheckPage(ToolkitModes.externalCalibration),
+    const UploadFilePage(2),
+    const UploadFilePage(3),
     const KFactorCalculatorPage(),
     const SettingsPage(),
   ];

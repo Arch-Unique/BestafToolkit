@@ -61,8 +61,12 @@ enum ErrorTypes {
 }
 
 enum ToolkitModes {
+  poupload("Upload PO"),
   internalCheck("Internal Check"),
+  uploadInternal("Upload Internal Check"),
   externalCalibration("External Calibration"),
+  uploadExternal("Upload External Check"),
+  certupload("Upload Certificate"),
   kFactorCalculation("K-Factor Calculation"),
   settings("Settings");
 
@@ -84,7 +88,7 @@ enum SettingsModes {
 
 enum ToolkitLocation {
   tincan("TINCAN"),
-  apapa("FOT APAPA");
+  apapa("FOT");
 
   final String title;
   const ToolkitLocation(this.title);
