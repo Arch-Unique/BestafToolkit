@@ -35,6 +35,12 @@ class _UploadFilePageState extends State<UploadFilePage> {
   File? file;
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SinglePageScaffold(
       title: "Upload ${modes[widget.curMode]}",
@@ -57,7 +63,7 @@ class _UploadFilePageState extends State<UploadFilePage> {
               "Tap To Select File",
               tecs[2],
               readOnly: true,
-              suffix: Icon(Icons.upload_file_rounded),
+              suffix: Icons.upload_file_rounded,
               onTap: () async {
                 FilePickerResult? result =
                     await FilePicker.platform.pickFiles();
@@ -106,9 +112,6 @@ class _UploadFilePageState extends State<UploadFilePage> {
                 onPressed: () async {
                   if (file == null) return Ui.showError("File cannot be empty");
                   if (widget.curMode == 0) {
-                    if (tecs[0].text.isEmpty) {
-                      return Ui.showError("Location/Lane cannot be empty");
-                    }
                     if (lanes.isEmpty) return Ui.showError("Lanes empty");
                     await controller.uploadPOforLanes(
                         lanes.map((e) => e.split(" - ")[1].trim()).toList(),
