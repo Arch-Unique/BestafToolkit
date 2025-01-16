@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:bestaf_toolkit/src/features/modes/controllers/toolkit_controller.dart';
 import 'package:bestaf_toolkit/src/global/ui/ui_barrel.dart';
 import 'package:bestaf_toolkit/src/global/ui/widgets/others/containers.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -40,29 +41,43 @@ class _UploadFilePageState extends State<UploadFilePage> {
       child: Ui.padding(
         child: Column(
           children: [
-            CustomTextField.dropdown(
-                ToolkitLocation.values.map((e) => e.title).toList(),
-                tecs[0],
-                "Select Location",
-                initOption: "TINCAN"),
-            if (widget.curMode == 0)
+            if (widget.curMode != 0)
               CustomTextField.dropdown(
                 controller.allMetersMap.keys.toList(),
-                tecs[1],
+                tecs[0],
                 "Select Lane/Meter",
                 initOption: controller.lane.toString(),
               ),
             if (widget.curMode == 3)
               CustomTextField(
                 "Enter K Factor",
-                tecs[2],
+                tecs[1],
               ),
+            CustomTextField(
+              "Tap To Select File",
+              tecs[2],
+              readOnly: true,
+              suffix: Icon(Icons.upload_file_rounded),
+              onTap: () async {
+                FilePickerResult? result =
+                    await FilePicker.platform.pickFiles();
+
+                if (result != null) {
+                  tecs[2].text = result.files.single.path!;
+                  file = File(result.files.single.path!);
+                }
+              },
+            ),
+            if (widget.curMode == 0)
+            AppText.bold("Select Lanes"),
             Expanded(
                 child: (widget.curMode != 0)
                     ? SizedBox()
                     : ListView.builder(
                         itemBuilder: (_, i) {
                           return ListTile(
+                            dense: true,
+                            contentPadding: EdgeInsets.all(4),
                             title: AppText.thin(
                                 controller.allMetersMap.keys.toList()[i]),
                             selected: lanes.contains(
@@ -91,31 +106,36 @@ class _UploadFilePageState extends State<UploadFilePage> {
                 onPressed: () async {
                   if (file == null) return Ui.showError("File cannot be empty");
                   if (widget.curMode == 0) {
-                    if (tecs[0].text.isEmpty)
-                      return Ui.showError("Location cannot be empty");
+                    if (tecs[0].text.isEmpty) {
+                      return Ui.showError("Location/Lane cannot be empty");
+                    }
                     if (lanes.isEmpty) return Ui.showError("Lanes empty");
                     await controller.uploadPOforLanes(
-                        lanes, tecs[0].text, file!);
+                        lanes.map((e) => e.split(" - ")[1].trim()).toList(),
+                        controller.allMetersMap[lanes[0]]!.location.title,
+                        file!);
                   } else if (widget.curMode == 1 || widget.curMode == 2) {
-                    if (tecs[0].text.isEmpty)
-                      return Ui.showError("Location cannot be empty");
-                    if (tecs[1].text.isEmpty)
-                      return Ui.showError("Lane cannot be empty");
+                    if (tecs[0].text.isEmpty) {
+                      return Ui.showError("Location/Lane cannot be empty");
+                    }
+
                     await controller.uploadSheetToLocal(
-                        tecs[1].text, tecs[0].text, file!,
+                        controller.allMetersMap[tecs[0].text]!.lane,
+                        controller.allMetersMap[tecs[0].text]!.location.title,
+                        file!,
                         isExternal: widget.curMode == 2);
                   } else {
-                    if (tecs[0].text.isEmpty)
-                      return Ui.showError("Location cannot be empty");
-                    if (tecs[1].text.isEmpty)
-                      return Ui.showError("Lane cannot be empty");
-                    if (tecs[2].text.isEmpty)
+                    if (tecs[0].text.isEmpty) {
+                      return Ui.showError("Location/Lane cannot be empty");
+                    }
+                    if (tecs[1].text.isEmpty) {
                       return Ui.showError("KFactor cannot be empty");
+                    }
                     await controller.uploadCertificate(
-                        tecs[1].text,
-                        tecs[0].text,
+                        controller.allMetersMap[tecs[0].text]!.lane,
+                        controller.allMetersMap[tecs[0].text]!.location.title,
                         file!,
-                        double.tryParse(tecs[2].text) ?? 0);
+                        double.tryParse(tecs[1].text) ?? 0);
                   }
                 },
                 text: "Upload File")

@@ -59,6 +59,7 @@ dependencies:
   file_saver: ^0.2.8
   uni_links: ^0.5.1
   flutter_onedrive: ^1.4.2
+  file_picker: ^8.1.7
   # aspose_words_cloud: ^23.9.0
   # flutter_paypal: ^0.2.0
   # flutter_paystack: ^1.0.7

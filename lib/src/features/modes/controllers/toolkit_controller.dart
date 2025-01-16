@@ -401,6 +401,13 @@ class ToolkitController extends GetxController {
     //     "https://mrsholdings.sharepoint.com/BESTAF_TRADING/LM%20Department/Forms/AllItems.aspx?e=5%3A3765496e7be942aea70effbcdb0e8ee9&at=9&CT=1676995817408&OR=OWA%2DNT&CID=547f0f0e%2Dd45f%2Ddff7%2D8428%2D5d41498e8df2&RootFolder=%2FBESTAF%5FTRADING%2FLM%20Department%2F09%2E%20Quality%20Management%20System%2FMeter%20calibration&FolderCTID=0x012000AB36752DF45D784FA7F2700E2D204983"));
     final xf = XFile(f.path);
 
+    Ui.showInfo("Saving to Local DB");
+    await uploadSheetToLocal(
+                        lane.lane,
+                        lane.location.title,
+                        f,
+                        isExternal: _mode.value == ToolkitModes.externalCalibration);
+
     await Share.shareXFiles(
       [xf],
     );
@@ -516,7 +523,8 @@ class ToolkitController extends GetxController {
           {'file': await dio.MultipartFile.fromFile(f.path)}.entries);
       cForms.addEntries({'location': location}.entries);
 
-      final formData = dio.FormData.fromMap(cForms, dio.ListFormat.multiCompatible);
+      final formData =
+          dio.FormData.fromMap(cForms, dio.ListFormat.multiCompatible);
 
       final response = await dio.Dio().post(
         url,
