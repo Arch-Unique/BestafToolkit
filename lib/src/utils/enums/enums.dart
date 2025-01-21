@@ -88,7 +88,7 @@ enum SettingsModes {
 
 enum ToolkitLocation {
   tincan("TINCAN"),
-  apapa("FOT");
+  apapa("APAPA");
 
   final String title;
   const ToolkitLocation(this.title);
