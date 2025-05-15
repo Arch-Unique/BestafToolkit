@@ -402,11 +402,9 @@ class ToolkitController extends GetxController {
     final xf = XFile(f.path);
 
     Ui.showInfo("Saving to Local DB");
-    await uploadSheetToLocal(
-                        lane.lane,
-                        lane.location.title,
-                        f,
-                        isExternal: _mode.value == ToolkitModes.externalCalibration);
+    await uploadSheetToLocal(lane.lane, lane.location.title, f,
+        isExternal: _mode.value == ToolkitModes.externalCalibration);
+    Ui.showInfo("Saved");
 
     await Share.shareXFiles(
       [xf],
@@ -414,32 +412,60 @@ class ToolkitController extends GetxController {
   }
 
   FutureOr<Uint8List> _fetchSomeData(File f) async {
+    // try {
+    //   const String apiKey =
+    //       '0c5474ba-f52b-4506-99ba-30d4ce683078'; // Replace with your API key
+    //   const String url = 'https://api.cloudmersive.com/convert/docx/to/pdf';
+
+    //   final formData = dio.FormData.fromMap({
+    //     'inputFile': await dio.MultipartFile.fromFile(f.path),
+    //   });
+
+    //   final response = await dio.Dio().post(
+    //     url,
+    //     data: formData,
+    //     options: dio.Options(headers: {
+    //       'Content-Type': 'multipart/form-data',
+    //       'Apikey': apiKey,
+    //     }, responseType: dio.ResponseType.bytes),
+    //   );
+
+    //   if (response.statusCode == 200) {
+    //     return Uint8List.fromList(response.data);
+    //   } else {
+    //     Ui.showError("File not saved, please try again later");
+    //     print('Conversion failed with status code ${response.statusCode}');
+    //   }
+    // } catch (e) {
+    //   print('Error: $e');
+    // }
+    // return f.readAsBytes();
+
     try {
-      const String apiKey =
-          '0c5474ba-f52b-4506-99ba-30d4ce683078'; // Replace with your API key
-      const String url = 'https://api.cloudmersive.com/convert/docx/to/pdf';
+      const String url = 'https://doc2pdf.archyuniq.com';
 
       final formData = dio.FormData.fromMap({
-        'inputFile': await dio.MultipartFile.fromFile(f.path),
+        'file': await dio.MultipartFile.fromFile(f.path),
       });
 
       final response = await dio.Dio().post(
         url,
         data: formData,
-        options: dio.Options(headers: {
-          'Content-Type': 'multipart/form-data',
-          'Apikey': apiKey,
-        }, responseType: dio.ResponseType.bytes),
+        options: dio.Options(
+            headers: {'Content-Type': 'multipart/form-data'},
+            responseType: dio.ResponseType.bytes),
       );
 
       if (response.statusCode == 200) {
-        return Uint8List.fromList(response.data);
+        return response.data!.bytes;
       } else {
         Ui.showError("File not saved, please try again later");
         print('Conversion failed with status code ${response.statusCode}');
       }
     } catch (e) {
+      Ui.showError("File not saved, please try again later");
       print('Error: $e');
+      
     }
     return f.readAsBytes();
   }
