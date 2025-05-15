@@ -442,7 +442,7 @@ class ToolkitController extends GetxController {
     // return f.readAsBytes();
 
     try {
-      const String url = 'https://doc2pdf.archyuniq.com';
+      const String url = 'https://doc2pdf.archyuniq.com/convert';
 
       final formData = dio.FormData.fromMap({
         'file': await dio.MultipartFile.fromFile(f.path),
