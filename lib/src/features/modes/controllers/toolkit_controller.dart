@@ -457,7 +457,7 @@ class ToolkitController extends GetxController {
       );
 
       if (response.statusCode == 200) {
-        return response.data!.bytes;
+        return Uint8List.fromList(response.data);
       } else {
         Ui.showError("File not saved, please try again later");
         print('Conversion failed with status code ${response.statusCode}');
