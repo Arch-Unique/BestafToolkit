@@ -427,4 +427,13 @@ class AppService extends GetxService {
     allRefs.add(a.toSaveAsString());
     await prefService.save(MyPrefs.mpRefInstruments, allRefs);
   }
+
+  changeServerAddress({String url = "192.168.0.136"}) async {
+    await prefService.save(MyPrefs.mpServer, url);
+  }
+
+  String getServerAddress() {
+    final f = prefService.get(MyPrefs.mpServer) ?? "192.168.0.136";
+    return f;
+  }
 }

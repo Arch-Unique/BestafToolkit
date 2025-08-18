@@ -80,7 +80,8 @@ enum SettingsModes {
       "Reference Instrument", "Create,edit and delete reference instruments"),
   history("History", "View history of all your toolkit sheets"),
   edituom("Unit Of Measurement",
-      "Change unit of measurement (default(true): Litre)");
+      "Change unit of measurement (default(true): Litre)"),
+  server("Server", "Edit Server URL");
 
   final String title, description;
   const SettingsModes(this.title, this.description);

@@ -459,7 +459,7 @@ class ToolkitController extends GetxController {
       if (response.statusCode == 200) {
         return Uint8List.fromList(response.data);
       } else {
-        Ui.showError("File not saved, please try again later");
+        Ui.showError("Saving file as docx format as pdf creation failed");
         print('Conversion failed with status code ${response.statusCode}');
       }
     } catch (e) {
@@ -473,7 +473,7 @@ class ToolkitController extends GetxController {
       {bool isExternal = false}) async {
     try {
       String url =
-          'http://192.168.1.147:8000/upload/${isExternal ? "external_check" : "internal_check"}';
+          'http://${appService.getServerAddress()}:8000/upload/${isExternal ? "external_check" : "internal_check"}';
 
       final formData = dio.FormData.fromMap({
         'file': await dio.MultipartFile.fromFile(f.path),
@@ -505,7 +505,7 @@ class ToolkitController extends GetxController {
       String lane, String location, File f, double kfactor) async {
     try {
       String url =
-          'http://192.168.1.147:8000/upload/external_calibration_certificate';
+          'http://${appService.getServerAddress()}:8000/upload/external_calibration_certificate';
 
       final formData = dio.FormData.fromMap({
         'file': await dio.MultipartFile.fromFile(f.path),
@@ -537,7 +537,8 @@ class ToolkitController extends GetxController {
   Future<void> uploadPOforLanes(
       List<String> lanes, String location, File f) async {
     try {
-      String url = 'http://192.168.1.147:8000/upload/external_purchase_order';
+      String url =
+          'http://${appService.getServerAddress()}:8000/upload/external_purchase_order';
       Map<String, dynamic> cForms = new Map();
 
       for (var element in lanes) {

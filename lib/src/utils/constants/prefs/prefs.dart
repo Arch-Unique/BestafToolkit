@@ -17,6 +17,7 @@ class MyPrefs {
   static const String mpIncompleteIT = "mpIncompleteIT";
   static const String mpIncompleteET = "mpIncompleteET";
   static const String mpIsLitre = "mpIsIlitre";
+  static const String mpServer = "mpServer";
 
   // static void listenToStorageChanges(String k, void Function(dynamic) v) {
   //   _prefs.listenKey(k, (j) {
